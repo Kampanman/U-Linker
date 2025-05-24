@@ -1,0 +1,64 @@
+# [【exises-09】対象 CSV アーカイブノート一覧エリア]
+
+- 【exises-09】機能説明
+  - 特徴・機能
+    - [【exises-08】アーカイブノート CSV タイトルテーブル]で選択された CSV ファイルの格納レコードの一部情報をテーブル内に表示する
+      - 表示するレコードは、ログインユーザーが登録したもののみ
+    - テーブル内で「編集」を押下すると、指定されたレコードの情報が[【exises-10】CSV ノート情報更新フォーム]に反映される
+  - 関連機能
+    - [【exises-08】アーカイブノート CSV タイトルテーブル]
+    - [【exises-10】CSV ノート情報更新フォーム]
+  - 関連変数
+    - flag.isSelectedArchiveNotesTableView（boolean 型。初期状態は false）
+    - noteCsv.selectedFileRows（Object の List 型）
+      - ここにテーブルに表示するレコード情報を格納する
+        - 但し、note など格納内容が重いケースがあるカラムはここでは格納対象外とする
+        - 格納対象カラムは「contents_id」「title」「created_at」「updated_at」「created_user_id」
+        - 上記以外のカラムデータは、「編集」押下時に API 通信により取得する
+      - ここからは各レコードを「notes_row」と呼称する
+- 【exises-09-01】アーカイブノートタイトルテーブル
+  - 特徴・機能
+    - 選択された CSV ファイルに登録されている、ログインユーザーが登録したノートの一部情報を表示するテーブル
+    - ログインユーザーが登録したビデオデータが存在しない場合は、テーブル上でその旨を示す
+  - 関連変数
+    - notes_row（Object 型）
+  - 【exises-09-01-01】タイトル
+    - 特徴・機能
+      - アーカイブノートのタイトル
+      - 内部データ「contents-id」には変数「notes_row.contents_id」の値を格納する
+    - 関連変数
+      - notes_row.title（String 型）
+      - notes_row.contents_id（String 型）
+  - 【exises-09-01-02】登録日
+    - 特徴・機能
+      - アーカイブノートの登録日
+      - 表記は「yyyy-mm-dd」形式
+    - 関連変数
+      - notes_row.created（datetime 型）
+  - 【exises-09-01-03】更新日
+    - 特徴・機能
+      - アーカイブノートの更新日
+      - 表記は「yyyy-mm-dd」形式
+    - 関連変数
+      - notes_row.updated（datetime 型）
+  - 【exises-09-01-04】公開範囲
+    - 特徴・機能
+      - アーカイブノートの公開範囲
+        - notes_row.publicity が 0 の場合は、「非公開」
+        - notes_row.publicity が 1 の場合は、「公開」
+        - notes_row.publicity が 2 の場合は、「講師にのみ公開」
+    - 関連変数
+      - notes_row.publicity（int 型）
+  - 【exises-09-01-04】編集
+    - 特徴・機能
+      - 内部データ「contents-id」には変数「notes_row.contents_id」の値を格納する
+      - 押下すると、notes_row.contents_id の合致するレコードのデータが[【exises-10】CSV ノート情報更新フォーム]に反映される
+      - 反映するレコードには、当ボタン押下のタイミングで API 通信を行うことで下記以外のカラムのデータも追加される
+        - 「contents_id」
+        - 「title」
+        - 「created_at」
+        - 「updated_at」
+        - 「created_user_id」
+      - [【exises-10】CSV ノート情報更新フォーム]が表示される
+    - 関連変数
+      - notes_row（Object 型）

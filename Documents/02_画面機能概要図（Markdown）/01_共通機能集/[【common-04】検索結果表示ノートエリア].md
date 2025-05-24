@@ -1,0 +1,444 @@
+# [【common-04】検索結果表示ノートエリア]
+
+- 【common-04】機能説明
+  - 特徴・機能
+    - 変数「searchForm」の内容を反映した検索結果のうち、ノートに関する分を取得して表示する
+      - searchForm.selectedDB にノートの CSV が存在していない場合
+        - テーブル[ulinker_notes]内を検索した結果のみを取得する
+      - searchForm.selectedDB にノートの CSV が存在している場合
+        - それらの CSV から取得してきたレコードも検索結果に反映されている
+    - 検索ワード入力欄に入力されたキーワードで、対話型 AI に入力するプロンプトを作成する
+  - 関連機能
+    - [【common-03】検索フォーム]
+    - [【common-05】検索結果表示ビデオエリア]
+  - 関連変数
+    - flag.isHitNoteAreaOpen（boolean 型。初期状態は false）
+    - searchForm（Object 型）
+    - searchResult.notes（Object の List 型）
+- 【common-04-01】該当ノートテーブル
+  - 特徴・機能
+    - 取得してきたノートの情報を反映したデータテーブルを表示する
+  - 関連変数
+    - searchResult.notes（Object の List 型）
+      - 各レコードを「notes_row」と呼称する
+  - 【common-04-01-01】公開範囲
+    - 特徴・機能
+      - 取得したノートの公開範囲を表示する
+        - [ulinker_notes.publicity]が 0 の場合は「非公開」
+        - [ulinker_notes.publicity]が 1 の場合は「公開」
+        - [ulinker_notes.publicity]が 2 の場合は「講師にのみ公開」
+    - 関連変数
+      - notes_row.publicity（int 型）
+  - 【common-04-01-02】ノートタイトル（リンク付き）
+    - 特徴・機能
+      - 取得したノートのタイトルを表示する
+      - 内部データ「contents-id」には次の値を格納する
+        - [ulinker_notes.contents_id]または CSV のレコードの contents_id を代入した notes_row.contents_id の値
+      - [ulinker_notes.url]（リンク）の有無に応じて表示が変わる
+        - リンクが設定されていない場合はそのまま表示される
+        - リンクが設定されている場合は青色のハイパーリンクが施されている
+          - リンク URL は「notes_row.url」に格納されている
+          - 押下すると別タブでその URL ページに遷移する
+      - searchForm.selectedDB の格納状況に応じて表示が変わる
+        - ノートの CSV が存在しない場合
+          - タイトルの横には何も表示されない
+        - ノートの CSV が存在する場合
+          - そのレコードが CSV から取得したものであれば、タイトル横に『（{CSV ファイル名}）』の表記がつく
+            - CSV ファイル名は「notes_row.from」に格納されている
+    - 関連変数
+      - notes_row.contents_id（int 型）
+      - notes_row.title（String 型）
+      - notes_row.url（String 型）
+      - notes_row.from（String 型）
+  - 【common-04-01-exises-01】サブリンク
+    - 特徴・機能
+      - 取得したノートのサブリンクの有無を表示する
+      - 登録ノートの条件に応じて表示が変わる
+        - ログインユーザーの登録ノートではない
+          - 「-」と表示される
+        - ログインユーザーの登録ノートである
+          - [ulinker_notes.url_sub]（サブリンク）が設定されているか
+            - 設定されている場合は、「あり」と表示される
+            - 設定されていない場合は、「なし」と表示される
+    - 関連変数
+      - notes_row.urlSub（String 型）
+      - notes_row.createdUserId（int 型）
+  - 【common-04-01-03】登録日時
+    - 特徴・機能
+      - 取得したノートが新規で登録された日時を表示する
+        - 表記は「yyyy-mm-dd HH:MM:SS」形式
+    - 関連変数
+      - notes_row.created（datetime 型）
+  - 【common-04-01-04】「表示」ボタン
+    - 特徴・機能
+      - 対象のノートを選択して選択中のノートエリアに表示する
+        - サーバー側 API から対象のレコードを取得して変数に格納する
+        - サーバー側 API に送信するオブジェクト変数「param」には、次の内容を格納する
+          - 『type: "getNoteRecord"』
+          - 『from: notes_row.from』
+          - 『contents_id: notes_row.contents_id』
+          - 『owner_id: loginUser.ownerId』
+          - 『token: {ランダムな半角英数字 16 文字}』
+        - 変数「isSelectedNoteAreaOpen」 を true にする
+      - [【common-05】検索結果表示ビデオエリア]が表示されている場合は非表示にする
+        - 変数「isHitVideoAreaOpen」 を false にする
+    - 関連変数
+      - flag.isSelectedNoteAreaOpen（boolean 型。初期状態は false）
+      - flag.isHitVideoAreaOpen（boolean 型。初期状態は false）
+      - notes_row（Object 型）
+- 【common-04-02】選択中のノートエリア
+  - 特徴・機能
+    - 選択したノートの内容を反映して閲覧できる状態にレンダリングする
+    - 初期状態は非表示。該当ノートテーブルで「表示」を押下した場合に表示される
+  - 関連変数
+    - flag.isSelectedNoteAreaOpen（boolean 型。初期状態は false）
+  - 【common-04-02-01】ノートタイトル（リンク付き）
+    - 特徴・機能
+      - 選択したノートのタイトルを表示する
+      - 内部データ「contents-id」には selectedRecord.note.contentsId の値を格納する
+        - selectedRecord.note.contentsId には、該当ノートテーブルで選択した notes_row.contents_id の値が入る
+      - タイトルの左には『タイトル: 』のラベルを表示する
+      - CSV ファイルから取得したレコードである場合
+        - タイトルの下には『（取得元アーカイブ: {CSV ファイル名}）』の表示が施される
+      - 変数「selectedRecord.note.url」（リンク）の有無に応じて表示が変わる
+        - リンクが設定されていない場合はそのまま表示される
+        - リンクが設定されている場合は青色のハイパーリンクが施されている
+          - 押下すると別タブでその URL ページに遷移する
+    - 関連変数
+      - selectedRecord.note.title（String 型）
+      - selectedRecord.note.url（String 型）
+      - selectedRecord.note.csvFileName（String 型）
+  - 【common-04-02-02】登録者名
+    - 特徴・機能
+      - 選択したノートの登録者名を表示する
+      - 登録者名の左には『登録者: 』のラベルを表示する
+    - 関連変数
+      - selectedRecord.note.createdUserName（String 型）
+  - 【common-04-02-exises-01】サブリンク
+    - 特徴・機能
+      - 選択したノートが次の条件を満たしている場合に表示される
+        - ログインユーザーが登録したノートである
+        - サブリンクが設定されているノートである
+      - 『サブリンク: 』のラベルと『アクセスする』を表示する
+        - 『アクセスする』には青色のハイパーリンクが施されている
+        - 『アクセスする』を押下すると別タブでサブリンクのサイトに遷移する
+    - 関連変数
+      - notes_row.urlSub（String 型）
+      - notes_row.createdUserId（int 型）
+  - 【common-04-02-exises-02】関連ノート・共通ワード集
+    - 特徴・機能
+      - 選択したノートに「関連ノート・共通ワード」が設定されている場合にこのパーツが表示される
+      - 設定されている「関連ノート・共通ワード」件数分、内部に次のパーツがリスト表示される
+        - 『{ノートタイトル} （共通ワード: {共通ワード}）』
+      - 「関連ノート・共通ワード」のデータはオブジェクト配列だが JSON 化されている
+        - パースして JavaScript 内で展開できるオブジェクト配列に変換する
+    - 関連変数
+      - notes_row.relateNotesAndWords（String 型。JSON 形式。レンダリングの際はオブジェクト配列に展開）
+        - notes_row.relatesDataObject（Object のリスト型）
+  - 【common-04-02-03】最終更新日
+    - 特徴・機能
+      - 選択したノートの最終更新日を表示する。また、その右横には登録日も表示する
+        - 日付部分の表記は「yyyy-mm-dd」形式とする
+      - ラベルも含めた表示内容は、次の通りとなる
+        - 『最終更新: {selectedRecord.note.lastUpdated（yyyy-mm-dd 形式に変換）}（ 登録日: {selectedRecord.note.created（yyyy-mm-dd 形式に変換）} ）』
+    - 関連変数
+      - selectedRecord.note.lastUpdated（datetime 型）
+      - selectedRecord.note.created（datetime 型）
+  - 【common-04-02-04】モードプルダウン
+    - 特徴・機能
+      - プルダウンの選択内容により、選択したノートの本文をどう表示するかを判別する
+    - 関連変数
+      - selectedRecord.note.textViewMode（int 型。初期状態は 0）
+    - 【common-04-02-04-01】["全文表示モード","ブラインドスタートモード","行読み上げモード","範囲選択・加工モード"]
+      - 特徴・機能
+        - 変数とプルダウン選択肢の対応関係は次の通り（selectedRecord.note.textViewMode を「textViewMode」と略す）
+          - textViewMode=0 の場合は「全文表示モード」
+          - textViewMode=1 の場合は「ブラインドスタートモード」
+          - textViewMode=2 の場合は「行読み上げモード」
+          - textViewMode=3 の場合は「範囲選択・加工モード」
+      - 関連変数
+        - selectedRecord.note.textViewMode（int 型。初期状態は 0）
+  - 【common-04-02-05】モードプルダウンの選択状態で表示機能を分ける
+    - 特徴・機能
+      - プルダウンの選択内容により、選択したノートの本文の表示形式が変わる
+      - どのモードでも共通しているのは次の機能
+        - [linker_notes.text]では左の文字で登録されていたエスケープ文字を右の文字に戻す
+          - ["&#39;","(半角シングルクォーテーション)"]
+          - ["&quot;","(半角ダブルクォーテーション)"]
+          - ["&com;","(半角カンマ)"]
+          - ["&amp;","(半角アンパサンド)"]
+          - ["&lt;","(半角小なり)"]
+          - ["&gt;","(半角大なり)"]
+          - ["&nbsp;","(半角スペース)"]
+          - ["&yen;","(半角円マーク)"]
+          - ["&copy;","(コピーライト)"]
+    - 関連変数
+      - selectedRecord.note（Object 型）
+    - 【common-04-02-05-01】全文表示モードの場合
+      - 特徴・機能
+        - ノートの本文全体がそのまま表示される
+      - 関連変数
+        - selectedRecord.note（Object 型）
+      - 【common-04-02-05-01-01】別タブで表示ボタン
+        - 特徴・機能
+          - 押下すると次の処理が行われる
+            - サーバー側APIと通信して、ページ遷移URLと次のセッションパラメータを設定してもらう
+              - 16桁半角英数字で構成される「page_token」
+              - 選択されたノートのcontents_idを格納する「selected_note_id」
+              - 選択されたノートのtitleを格納する「selected_note_title」
+              - 選択されたノートのtextを格納する「selected_note_text」
+            - サーバー側 API に送信するオブジェクト変数「param」には、次の内容を格納する
+              - 『type: "setPageToken"』
+              - 『contents_id: selectedRecord.note.contentsId』
+              - 『title: selectedRecord.note.title』
+              - 『text: selectedRecord.note.text』
+              - 『owner_id: loginUser.ownerId』
+              - 『token: {ランダムな半角英数字 16 文字}』
+            - サーバー側APIへの通信が成功すると、選択されたノートの内容を反映した当サービスの画面が別タブで表示される
+              - API通信により返却される遷移用URLの値には、「page_token」の値を反映したパラメータが付加されている
+          - 押下後は非表示になる
+        - 関連変数
+          - selectedRecord.note（Object 型）
+      - 【common-04-02-05-01-02】ノートをダウンロードボタン
+        - 特徴・機能
+          - 押下すると、選択されたノートの内容を反映した TXT ファイルがダウンロードされる
+            - TXT ファイル名
+              - 『{selectedRecord.note.title}\_{ボタン押下時刻（yyyyMMdd_hhmmss 形式）}.txt』
+            - TXT ファイルの内容
+              - 『タイトル： {selectedRecord.note.title}』
+              - 『（空白行）』
+              - 『作成者： {selectedRecord.note.createdUserName}』
+              - 『登録日： {selectedRecord.note.created（yyyy-mm-dd 形式に変換）}』
+              - 『最終更新日： {selectedRecord.note.lastUpdated（yyyy-mm-dd 形式に変換）}』
+              - 『（空白行）』
+              - 『{selectedRecord.note.textList の各 text を改行コード\n で連結させた文}』
+              - 『（空白行）』
+              - 『取得元サイト： {(selectedRecord.note.url の設定あり) ? selectedRecord.note.url : "設定なし"}』
+              - 条件により場合分けする
+                - selectedRecord.note.createdUserId がログインユーザーのもの、且つ selectedRecord.note.urlSub の設定あり
+                  - 『サブリンク： {selectedRecord.note.urlSub}』
+                - それ以外の場合
+                  - 『（空白行）』
+          - 押下後は非表示になる
+        - 関連変数
+          - selectedRecord.note（Object 型）
+      - 【common-04-02-05-01-03】ノート本文
+        - 特徴・機能
+          - 行頭のボタン表示を伴わずにノートの本文全体が表示される
+          - 行ごとに文を装飾するかの判定が行われる
+            - 行頭に見出し記号（["●","■","◆","◇","☆"]のいずれか）が記述されている行は、太字に装飾する
+            - 検索ワードが含まれる行は、水色太字に装飾する
+              - 検索ワード中に半角スペースがあり、検索条件が「AND」の場合
+                - 半角スペースで区切った単語のすべてが含まれる文が装飾対象
+              - 検索ワード中に半角スペースがあり、検索条件が「OR」の場合
+                - 半角スペースで区切った単語のいずれかが含まれる文が装飾対象
+            - 以下の文字の組み合わせで合計数が一致していない行は、赤色太字に装飾する（これは検索ワードヒット時の水色太字装飾に優先する）
+              - ["「","」"]
+              - ["『","』"]
+              - ["（","）"]
+              - ["(",")"]
+        - 関連変数
+          - selectedRecord.note.textList（Object の List 型）
+            - 各要素の構成は、{"index": (i 番目), "class": (装飾判定用の class), "text": (テキストを改行コードで分割した行)}
+    - 【common-04-02-05-02】ブラインドスタートモードの場合
+      - 特徴・機能
+        - ノートの本文が行ごとに区切られ、行頭の文字に応じて各行の表示内容を分ける
+          - 行頭に見出し記号（["●","■","◆","◇","☆"]のいずれか）が記述されている場合
+            - 本文の i 番目の行が表示される
+          - 行頭が見出し記号ではない場合
+            - 「表示する」ボタンが表示される
+              - 押下すると、非表示だった本文 i 番目の行の文字列がフェードイン表示される
+              - フェードイン表示前と表示後で、対応する class を切り替える（表示前は blind、表示後は fader）
+      - 関連変数
+        - selectedRecord.note（Object 型）
+      - 【common-04-02-05-02-01】ノートをダウンロードボタン
+        - 特徴・機能
+          - 全文表示モード時のノートをダウンロードボタンと同様
+        - 関連変数
+          - selectedRecord.note（Object 型）
+      - 【common-04-02-05-02-02】以下のパーツが行ごとに表示される
+        - 行頭に見出し記号（["●","■","◆","◇","☆"]のいずれか）が記述されている場合
+          - 【common-04-02-05-02-02-01】本文の i 番目の行
+            - 特徴・機能
+              - ノートの本文を改行コードごとに行に区切った selectedRecord.note.textList の i 番目の行を表示する
+            - 関連変数
+              - selectedRecord.note.textList
+                - textList[i].text（String 型）
+        - 行頭が見出し記号ではない場合
+          - 【common-04-02-05-02-02-02】表示するボタン
+            - 特徴・機能
+              - 押下すると、非表示だった本文 i 番目の行の文字列がフェードイン表示される
+            - 関連変数
+              - selectedRecord.note.textList
+                - textList[i].text（String 型）
+    - 【common-04-02-05-03】行読み上げモードの場合
+      - 特徴・機能
+        - ノートの本文が行ごとに区切られ、各行左部には「読み上げ」ボタンが表示される
+      - 関連変数
+        - selectedRecord.note（Object 型）
+      - 【common-04-02-05-03-01】ノートをダウンロードボタン
+        - 特徴・機能
+          - 全文表示モード時のノートをダウンロードボタンと同様
+        - 関連変数
+          - selectedRecord.note（Object 型）
+      - 【common-04-02-05-03-02】以下のパーツが行ごとに表示される
+        - 【common-04-02-05-03-02-01】読み上げボタン
+          - 特徴・機能
+            - 対象行のテキストを読み上げてくれる API と非同期通信を行う
+            - 非同期通信が成功すると、対象行のテキスト読み上げが再生される
+            - 読み上げの再生中は、表示されているすべての読み上げボタンが非活性となる
+          - 関連変数
+            - selectedRecord.note.textList
+              - textList[i].text（String 型）
+        - 【common-04-02-05-03-02-02】本文の i 番目の行
+          - 特徴・機能
+            - ノートの本文を改行コードごとに行に区切った selectedRecord.note.textList の各 text を表示する
+            - 読み上げ再生対象となったテキストは、読み上げ再生中は赤い太字になる
+          - 関連変数
+            - selectedRecord.note.textList
+              - textList[i].text（String 型）
+    - 【common-04-02-05-04】範囲選択・加工モードの場合
+      - 特徴・機能
+        - ノートの本文が行ごとに区切られ、各行左部には範囲選択・加工モードに対応するボタンが表示される
+      - 関連変数
+        - selectedRecord.note（Object 型）
+      - 【common-04-02-05-04-01】選択範囲で加工ノートを作成ボタン
+        - 特徴・機能
+          - selectedRecord.note.textList から、指定された行（textList[i].text とする）が抽出され、同オブジェクトの selectedTextRows に格納される
+          - selectedTextRows を改行コード（\n）で連結したテキストを selectedRecord.note.rebuildText に格納する
+            - selectedRecord.note.rebuildText を加工ノート作成入力ボックスに反映する
+          - 押下後は非表示になる
+        - 関連変数
+          - selectedRecord.note.selectedTextRows（String の List 型）
+          - selectedRecord.note.textList（Object の List 型）
+            - 各要素の構成は、{"index": (i 番目), "class": (装飾判定用の class), "text": (テキストを改行コードで分割した行)}
+          - selectedRecord.note.rebuildText（String 型）
+      - 【common-04-02-05-04-02】選択範囲で加工ノートを作成ボタン押下前は、以下のパーツが行ごとに表示される
+        - 特徴・機能
+          - テキスト本文から行を指定して抽出し、選択範囲で加工ノートを作成する
+        - 関連変数
+          - selectedRecord.note.selectedTextRows（String の List 型）
+          - selectedRecord.note.textList（Object の List 型）
+            - 各要素の構成は、{"index": (i 番目), "class": (装飾判定用の class), "text": (テキストを改行コードで分割した行)}
+          - selectedRecord.note.rebuildText（String 型）
+        - 【common-04-02-05-04-02-01】次のいずれかのボタン
+          - 【common-04-02-05-04-02-01-01】指定開始（初期表示）
+            - 特徴・機能
+              - 押下時の挙動
+                - その行は押下可能な「単体選択」に切り替わる
+                - そこより上の「選択済み」以外の行は、押下不可である「選択不可」に切り替わる
+                - そこより下の行は、押下可能な「範囲終了」に切り替わる
+          - 【common-04-02-05-04-02-01-02】範囲終了
+            - 特徴・機能
+              - 押下時の挙動
+                - 「範囲開始」押下行からその「範囲終了」押下行までが、押下不可である「選択済み」に切り替わる
+                - そこより下の行は、再び「指定開始」に切り替わる
+          - 【common-04-02-05-04-02-01-03】単体選択
+            - 特徴・機能
+              - 押下時の挙動
+                - その行は押下不可である「選択済み」に切り替わる
+                - そこより下の行は、再び「指定開始」に切り替わる
+          - 【common-04-02-05-04-02-01-04】選択済み
+            - 特徴・機能
+              - 「指定開始」「範囲終了」「単体選択」押下により選択された範囲がこれに切り替わる
+              - 押下不可
+          - 【common-04-02-05-04-02-01-05】選択不可
+            - 特徴・機能
+              - 「指定開始」「範囲終了」「単体選択」押下により選択されなかった範囲がこれに切り替わる
+              - 押下不可
+        - 【common-04-02-05-04-02-02】本文の i 番目の行
+          - 特徴・機能
+            - selectedRecord.note.textList の i 番目の text を表示する
+          - 関連変数
+            - selectedRecord.note.textList（Object の List 型）
+              - 各要素の構成は、{"index": (i 番目), "class": (装飾判定用の class), "text": (テキストを改行コードで分割した行)}
+      - 【common-04-02-05-04-03】選択範囲で加工ノートを作成ボタン押下後は、以下のパーツが表示される
+        - 【common-04-02-05-04-03-01】加工ノート作成入力ボックス
+          - 特徴・機能
+            - 選択した範囲のテキストが反映されている
+              - selectedRecord.note.selectedTextRows が selectedRecord.note.rebuildText へと加工されている
+            - 「加工ノート本文」のラベルを入力欄に設定する
+          - 関連変数
+            - selectedRecord.note.selectedTextRows（String の List 型）
+            - selectedRecord.note.rebuildText（String 型）
+        - 【common-04-02-05-04-03-02】虫食い化するボタン
+          - 特徴・機能
+            - 加工ノート作成入力ボックスで選択された範囲の文字を『【＿（← 選択した文字数分）】』に置換する
+            - 選択された範囲の文字や単語が、このほかに加工ノート作成入力ボックスに複数存在する場合
+              - それらの文字・単語は置換されないようにする
+              - あくまで選択された範囲の文字のみを置換対象とする
+          - 関連変数
+            - selectedRecord.note.rebuildText（String 型）
+        - 【common-04-02-05-04-03-03】【】で囲むボタン
+          - 特徴・機能
+            - 加工ノート作成入力ボックスで選択された範囲の文字を『【』と『】』で囲む
+            - 選択された範囲の文字や単語が、このほかに加工ノート作成入力ボックスに複数存在する場合
+              - それらの文字・単語は囲まれないようにする
+              - あくまで選択された範囲の文字のみを加工対象とする
+          - 関連変数
+            - selectedRecord.note.rebuildText（String 型）
+        - 【common-04-02-05-04-03-04】☆ で囲むボタン
+          - 特徴・機能
+            - 加工ノート作成入力ボックスで選択された範囲の文字の両端を『☆』で囲む
+            - 選択された範囲の文字や単語が、このほかに加工ノート作成入力ボックスに複数存在する場合
+              - それらの文字・単語は囲まれないようにする
+              - あくまで選択された範囲の文字のみを加工対象とする
+          - 関連変数
+            - selectedRecord.note.rebuildText（String 型）
+        - 【common-04-02-05-04-03-05】ノートをダウンロードボタン
+          - 特徴・機能
+            - 押下すると、選択されたノートの範囲選択分の内容を反映した TXT ファイルがダウンロードされる
+              - TXT ファイル名
+                - 『{selectedRecord.note.title}\_範囲選択分\_{ボタン押下時刻（yyyyMMdd_hhmmss 形式）}.txt』
+              - TXT ファイルの内容
+                - 『タイトル： {selectedRecord.note.title}（範囲選択・加工モード利用）』
+                - 『（空白行）』
+                - 『作成者： {selectedRecord.note.createdUserName}』
+                - 『登録日： {selectedRecord.note.created（yyyy-mm-dd 形式に変換）}』
+                - 『最終更新日： {selectedRecord.note.lastUpdated（yyyy-mm-dd 形式に変換）}』
+                - 『（空白行）』
+                - 『{selectedRecord.note.rebuildText}』
+                - 『（空白行）』
+                - 『取得元サイト： {(selectedRecord.note.url の設定あり) ? selectedRecord.note.url : "設定なし"}』
+                - 条件により場合分けする
+                  - selectedRecord.note.createdUserId がログインユーザーのもの、且つ selectedRecord.note.urlSub の設定あり
+                    - 『サブリンク： {selectedRecord.note.urlSub}』
+                  - それ以外の場合
+                    - 『（空白行）』
+            - 押下後は非表示になる
+          - 関連変数
+            - selectedRecord.note（Object 型）
+  - 【common-04-02-06】関連動画
+    - 特徴・機能
+      - ログインユーザーが登録した、ノートに関連する動画 URL（最大 5 つ）を反映したボタンとフレームを表示する
+      - 表示されているノートが、ログインユーザーが登録したものである場合のみ表示される
+      - [linker_notes.relate_videos]に動画 URL が設定されているかどうかで、表示を分ける
+        - [linker_notes.relate_videos]の文字列を改行コードで区切って配列化し、selectedRecord.note.relateVideosArray に格納する
+        - 設定されていない場合
+          - i つめの動画を表示ボタンの表示エリアには『設定なし』と表示する
+        - 設定されている場合
+          - i つめの動画を表示ボタンを、設定されている動画 URL の数（最大 5 つ）だけ表示
+    - 関連変数
+      - selectedRecord.note.createdUserId（int 型）
+      - selectedRecord.note.relateVideosArray（String の List 型）
+    - 【common-04-02-06-01】i つめの動画を表示ボタン
+      - 特徴・機能
+        - selectedRecord.note.relateVideosArray に格納された URL を反映したボタン
+        - 押下すると、ボタンの下にその URL を反映した動画フレームが表示される
+        - 動画フレーム表示後は次の状態となる
+          - 押下したそのボタンは非表示になる
+          - 押下したもの以外の「common-04-02-06-01」のボタンは再度表示される
+          - 押下したボタンに対応する動画 URL のものではない「common-04-02-06-02」の動画フレームは非表示になる
+      - 関連変数
+        - selectedRecord.note.relateVideosArray（String の List 型）
+    - 【common-04-02-06-02】動画フレーム
+      - 特徴・機能
+        - i つめの動画を表示ボタンに設定された動画 URL を反映したフレーム
+        - フレームの大きさは、開いているブラウザの幅に依存する
+      - 関連変数
+        - selectedRecord.note.relateVideosArray（String の List 型）
+    - 【common-04-02-06-03】閉じるボタン
+      - 特徴・機能
+        - i つめの動画を表示ボタンを押下して表示されたフレームエリアを閉じる
+      - 関連変数
+        - selectedRecord.note.relateVideosArray（String の List 型）

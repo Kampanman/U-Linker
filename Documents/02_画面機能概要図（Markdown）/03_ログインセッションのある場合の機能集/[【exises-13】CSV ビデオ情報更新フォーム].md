@@ -1,0 +1,82 @@
+# [【exises-13】CSV ビデオ情報更新フォーム]
+
+- 【exises-13】機能説明
+  - 特徴・機能
+    - [【exises-12】対象 CSV アーカイブビデオ一覧エリア]で選択されたレコードのデータを反映したフォームを表示する
+  - 関連機能
+    - [【exises-07】ビデオ新規登録 or ビデオ情報更新フォーム]
+    - [【exises-12】対象 CSV アーカイブビデオ一覧エリア]
+  - 関連変数
+    - flag.isArchiveVideoUpdateFormOpen（boolean 型。初期状態は false）
+    - archiveVideoUpdateForm（Object 型）
+- 【exises-07】※基本的には「ビデオ新規登録 or ビデオ情報更新フォーム」の流用でよい
+  - 【exises-07-01】ビデオタイトル入力欄
+    - 特徴・機能
+      - 登録または更新するビデオのタイトルを入力できる
+      - 長さは半角全角両方可能で 100 文字以内
+      - 「タイトル」のラベルを入力欄に設定する
+      - 入力必須の項目
+      - 更新の場合、内部データ「contents-id」には次の値を格納する
+        - archiveVideoUpdateForm.contentsId の値を格納する
+    - 関連変数
+      - archiveVideoUpdateForm.contentsId（int 型）
+      - archiveVideoUpdateForm.title（String 型）
+  - 【exises-07-02】URL 入力欄
+    - 特徴・機能
+      - 登録または更新するビデオの URL を入力できる
+      - 「URL」のラベルを入力欄に設定する
+      - 入力必須の項目
+      - youtube の動画 URL（<https://www.youtube.com/watch?v={識別文字}>の形式）である必要がある
+    - 関連変数
+      - archiveVideoUpdateForm.url（String 型）
+  - 【exises-07-03】ビデオタグ入力欄
+    - 特徴・機能
+      - 登録または更新するビデオのタグワードを入力できる
+      - 「タグワード」のラベルを入力欄に設定する
+    - 関連変数
+      - archiveVideoUpdateForm.tag（String 型）
+  - 【exises-07-04】公開設定プルダウン
+    - 特徴・機能
+      - 登録または更新するビデオの公開設定を、変数「archiveVideoUpdateForm.publicity」の値に応じてプルダウンから選択できる
+    - 関連変数
+      - archiveVideoUpdateForm.publicity（int 型）
+    - 【exises-07-04-01】["公開","講師にのみ公開","非公開"]
+      - 特徴・機能
+      - プルダウンの各選択肢は、変数「archiveVideoUpdateForm.publicity」に対応している
+        - 2 の場合は「講師にのみ公開」
+        - 1 の場合は「公開」
+        - 0 の場合は「非公開」
+      - 関連変数
+        - archiveVideoUpdateForm.publicity（int 型）
+- 【exises-13-01】CSV 行データをダウンロードボタン
+  - 特徴・機能
+    - 以下の入力欄がすべて入力済みの状態になると活性化する
+      - ビデオタイトル入力欄
+      - URL 入力欄
+    - バリデーションを実施した上で、TXT ファイルでダウンロード処理を実行する
+      - バリデーションでは以下の判定を行う
+        - ビデオタイトル入力欄に半角英数字、全角英数字、日本語文字のいずれも含まれていない
+        - ビデオタグ入力欄に半角英数字、全角英数字、日本語文字のいずれも含まれていない
+        - URL 入力欄に youtube 動画の URL ではない内容が入力されている
+      - データのダウンロードが実行されると当ボタンは非表示になる
+    - 編集した CSV ビデオレコードの内容を反映した TXT ファイルがダウンロードされる
+      - TXT ファイル名
+        - 『csv-row\_{archiveVideoUpdateForm.title}\_{ボタン押下時刻（yyyyMMdd_hhmmss 形式）}.txt』
+    - TXT ファイルの内容
+      - 次の内容が半角カンマで JOIN 連結されている
+        - 『"{archiveVideoUpdateForm.contentsId}"』
+        - 『"{archiveVideoUpdateForm.title}"』
+        - 『"{archiveVideoUpdateForm.url}"』
+        - 『"{archiveVideoUpdateForm.tag}"』
+        - 『"{archiveVideoUpdateForm.publicity}"』
+        - 『"{archiveVideoUpdateForm.createdTime}"』
+        - 『"{archiveVideoUpdateForm.createdUserId}"』
+        - 『"{ボタン押下時刻（yyyyMMdd_hhmmss 形式）}"』
+        - 『"{archiveVideoUpdateForm.createdUserId}"』
+  - 関連変数
+    - archiveVideoUpdateForm（Object 型）
+- 【exises-13-02】リセット
+  - 特徴・機能
+    - 押下すると、変数「archiveVideoUpdateForm」の各パラメータがレコード選択時の状態に戻る
+  - 関連変数
+    - archiveNoteUpdateForm

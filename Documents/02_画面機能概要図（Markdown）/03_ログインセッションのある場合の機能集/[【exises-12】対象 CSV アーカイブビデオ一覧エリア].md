@@ -1,0 +1,55 @@
+# [【exises-12】対象 CSV アーカイブビデオ一覧エリア]
+
+- 【exises-12】機能説明
+  - 特徴・機能
+    - [【exises-11】アーカイブビデオ CSV タイトルテーブル]で選択された CSV ファイルの格納レコードの一部情報をテーブル内に表示する
+      - 表示するレコードは、ログインユーザーが登録したもののみ
+    - テーブル内で「編集」を押下すると、指定されたレコードの情報が[【exises-13】CSV ビデオ情報更新フォーム]に反映される
+  - 関連機能
+    - [【exises-11】アーカイブビデオ CSV タイトルテーブル]
+    - [【exises-13】CSV ビデオ情報更新フォーム]
+  - 関連変数
+    - flag.isSelectedArchiveVideosTableView（boolean 型。初期状態は false）
+    - videoCsv.selectedFileRows（Object の List 型）
+      - ここにテーブルに表示するレコード情報を格納する
+      - ここからは各レコードを「videos_row」と呼称する
+- 【exises-12-01】アーカイブビデオタイトルテーブル
+  - 特徴・機能
+    - 選択された CSV ファイルに登録されている、ログインユーザーが登録したビデオの一部情報を表示するテーブル
+    - ログインユーザーが登録したビデオデータが存在しない場合は、テーブル上でその旨を示す
+  - 関連変数
+    - videos_row（Object 型）
+  - 【exises-12-01-01】タイトル
+    - 特徴・機能
+      - アーカイブビデオのタイトル
+      - 内部データ「contents-id」には変数「videos_row.contentsId」の値を格納する
+    - 関連変数
+      - videos_row.title（String 型）
+      - videos_row.contentsId（String 型）
+  - 【exises-12-01-02】登録日
+    - 特徴・機能
+      - アーカイブビデオの登録日
+      - 表記は「yyyy-mm-dd」形式
+    - 関連変数
+      - videos_row.created（datetime 型）
+  - 【exises-12-01-03】更新日
+    - 特徴・機能
+      - アーカイブビデオの更新日
+      - 表記は「yyyy-mm-dd」形式
+    - 関連変数
+      - videos_row.updated（datetime 型）
+  - 【exises-12-01-04】公開範囲
+    - 特徴・機能
+      - アーカイブビデオの公開範囲
+        - videos_row.publicity が 0 の場合は、「非公開」
+        - videos_row.publicity が 1 の場合は、「公開」
+        - videos_row.publicity が 2 の場合は、「講師にのみ公開」
+    - 関連変数
+      - videos_row.publicity（int 型）
+  - 【exises-12-01-05】編集
+    - 特徴・機能
+      - 内部データ「contents-id」には変数「videos_row.contentsId」の値を格納する
+      - 押下すると、videos_row.contentsId の合致するレコードのデータが[【exises-13】CSV ビデオ情報更新フォーム]に反映される
+      - [【exises-13】CSV ビデオ情報更新フォーム]が表示される
+    - 関連変数
+      - videos_row（Object 型）

@@ -1,0 +1,112 @@
+# [【common-05】検索結果表示ビデオエリア]
+
+- 【common-05】機能説明
+  - 特徴・機能
+    - 変数「searchForm」の内容を反映した検索結果のうち、ビデオに関する分を取得して表示する
+      - searchForm.selectedDB にビデオの CSV が存在していない場合
+        - テーブル[ulinker_videos]内を検索した結果のみを取得する
+      - searchForm.selectedDB にビデオの CSV が存在している場合
+        - それらの CSV から取得してきたレコードも検索結果に反映されている
+  - 関連機能
+    - [【common-03】検索フォーム]
+    - [【common-04】検索結果表示ノートエリア]
+  - 関連変数
+    - flag.isHitVideoAreaOpen（boolean 型。初期状態は false）
+    - searchForm（Object 型）
+    - searchResult.videos（Object の List 型）
+- 【common-05-01】該当ビデオテーブル
+  - 特徴・機能
+    - 取得してきたビデオの情報を反映したデータテーブルを表示する
+  - 関連変数
+    - searchResult.videos（Object の List 型）
+      - 各レコードを「videos_row」と呼称する
+  - 【common-05-01-01】公開範囲
+    - 特徴・機能
+      - 取得したビデオの公開範囲を表示する
+        - [ulinker_videos.publicity]が 0 の場合は「非公開」
+        - [ulinker_videos.publicity]が 1 の場合は「公開」
+        - [ulinker_videos.publicity]が 2 の場合は「講師にのみ公開」
+    - 関連変数
+      - videos_row.publicity（int 型）
+  - 【common-05-01-02】ビデオタイトル
+    - 特徴・機能
+      - 取得したビデオのタイトルを表示する
+      - 内部データ「contents-id」には次の値を格納する
+        - [ulinker_visdeos.contents_id]または CSV のレコードの contents_id を代入した videos_row.contentsId の値
+      - searchForm.selectedDB の格納状況に応じて表示が変わる
+        - ビデオの CSV が存在しない場合
+          - タイトルの横には何も表示されない
+        - ビデオの CSV が存在する場合
+          - そのレコードが CSV から取得したものであれば、タイトル横に『（{CSV ファイル名}）』の表記がつく
+            - CSV ファイル名は「videos_row.from」に格納されている
+    - 関連変数
+      - videos_row.title（String 型）
+      - videos_row.from（String 型）
+  - 【common-05-01-03】登録日時
+    - 特徴・機能
+      - 取得したビデオが新規で登録された日時を表示する
+        - 表記は「yyyy-mm-dd HH:MM:SS」形式
+    - 関連変数
+      - videos_row.created（datetime 型）
+  - 【common-05-01-04】「表示」ボタン
+    - 特徴・機能
+      - 対象のビデオを選択して選択中のビデオエリアに表示する
+        - サーバー側 API から対象のレコードを取得して変数に格納する
+        - サーバー側 API に送信するオブジェクト変数「param」には、次の内容を格納する
+          - 『type: "getVideoRecord"』
+          - 『from: videos_row.from』
+          - 『contents_id: videos_row.contents_id』
+          - 『owner_id: loginUser.ownerId』
+          - 『token: {ランダムな半角英数字 16 文字}』
+        - 変数「isSelectedVideoAreaOpen」 を true にする
+      - [【common-04】検索結果表示ノートエリア]が表示されている場合は非表示にする
+        - 変数「isHitNoteAreaOpen」 を false にする
+    - 関連変数
+      - flag.isSelectedVideoAreaOpen（boolean 型。初期状態は false）
+      - flag.isHitNoteAreaOpen（boolean 型。初期状態は false）
+      - videos_row（Object 型）
+- 【common-05-02】選択中のビデオエリア
+  - 特徴・機能
+    - 選択したビデオの内容を反映して閲覧できる状態にレンダリングする
+    - 初期状態は非表示。該当ビデオテーブルで「表示」を押下した場合に表示される
+  - 関連変数
+    - flag.isSelectedVideoAreaOpen（boolean 型。初期状態は false）
+  - 【common-05-02-01】ビデオタイトル
+    - 特徴・機能
+      - 選択したビデオのタイトルを表示する
+      - 内部データ「contents-id」には selectedRecord.video.contentsId の値を格納する
+        - selectedRecord.video.contentsId には、該当ビデオテーブルで選択した videos_row.contentsId の値が入る
+      - タイトルの左には『タイトル: 』のラベルを表示する
+      - CSV ファイルから取得したレコードである場合
+        - タイトルの下には『（取得元アーカイブ: {CSV ファイル名}）』の表示が施される
+    - 関連変数
+      - selectedRecord.video.title（String 型）
+      - selectedRecord.video.csvFileName（String 型）
+  - 【common-05-02-02】登録タグ
+    - 特徴・機能
+      - 選択したビデオの登録タグを表示する
+      - 登録タグの左には『登録タグ: 』のラベルを表示する
+    - 関連変数
+      - selectedRecord.video.tags（String 型）
+  - 【common-05-02-03】登録者名
+    - 特徴・機能
+      - 選択したビデオの登録者名を表示する
+      - 登録者名の左には『登録者: 』のラベルを表示する
+    - 関連変数
+      - selectedRecord.video.createdUserName（String 型）
+  - 【common-05-02-04】最終更新日
+    - 特徴・機能
+      - 選択したビデオの最終更新日を表示する。また、その右横には登録日も表示する
+        - 日付部分の表記は「yyyy-mm-dd」形式とする
+      - ラベルも含めた表示内容は、次の通りとなる
+        - 『最終更新: {selectedRecord.video.lastUpdated（yyyy-mm-dd 形式に変換）}（ 登録日: {selectedRecord.video.created（yyyy-mm-dd 形式に変換）} ）』
+    - 関連変数
+      - selectedRecord.video.lastUpdated（datetime 型）
+      - selectedRecord.video.created（datetime 型）
+  - 【common-05-02-05】ビデオフレーム
+    - 特徴・機能
+      - 選択したビデオの設定 URL を反映した youtube 動画のフレームを表示する
+      - 設定 URL が間違っていなければ、選択中のビデオエリア上でその動画を視聴できる
+      - フレームの大きさは使用端末ごとのブラウザの幅に依存する
+    - 関連変数
+      - selectedRecord.video.url（String 型）

@@ -1,0 +1,245 @@
+# [Vue の Data に外部から注入する変数「flag」]オブジェクト構成
+
+- オブジェクトパラメータ
+  - isAccountRegistFormOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【nonses-02】ユーザー新規登録フォーム]が表示される
+      - false にした場合の変化
+        - [【nonses-02】ユーザー新規登録フォーム]が非表示になる
+        - [【nonses-02】ユーザー新規登録フォーム]に係る変数が初期化される
+    - 初期値
+      - false
+  - isAccountsTableView
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【exises-02】ユーザー一覧エリア]が表示される
+      - false にした場合の変化
+        - [【exises-02】ユーザー一覧エリア]が非表示になる
+        - [【exises-02】ユーザー一覧エリア]に係る変数が初期化される
+    - 初期値
+      - false
+  - isAccountRegistUpdateFormOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【exises-03】ユーザー新規登録 or ユーザー情報更新フォーム]が表示される
+      - false にした場合の変化
+        - [【exises-03】ユーザー新規登録 or ユーザー情報更新フォーム]が非表示になる
+        - [【exises-03】ユーザー新規登録 or ユーザー情報更新フォーム]に係る変数が初期化される
+    - 初期値
+      - false
+  - isArchiveNoteUpdateFormOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【exises-10】CSV ノート情報更新フォーム]が表示される
+      - false にした場合の変化
+        - [【exises-10】CSV ノート情報更新フォーム]が非表示になる
+        - [【exises-10】CSV ノート情報更新フォーム]に係る変数が初期化される
+    - 初期値
+      - false
+  - isArchiveVideoUpdateFormOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【exises-13】CSV ビデオ情報更新フォーム]が表示される
+      - false にした場合の変化
+        - [【exises-13】CSV ビデオ情報更新フォーム]が非表示になる
+        - [【exises-13】CSV ビデオ情報更新フォーム]に係る変数が初期化される
+    - 初期値
+      - false
+  - isBookmarkSitesView
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【exises-14】お気に入りサイトリスト]が表示される
+      - false にした場合の変化
+        - [【exises-14】お気に入りサイトリスト]が非表示になる
+        - [【exises-14】お気に入りサイトリスト]に係る変数が初期化される
+    - 初期値
+      - false
+  - isBookmarkRegistUpdateFormOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - 「サイト情報登録編集フォーム」が表示される
+      - false にした場合の変化
+        - 「サイト情報登録編集フォーム」が非表示になる
+        - 「サイト情報登録編集フォーム」に係る変数が初期化される
+    - 初期値
+      - false
+  - isHbDialogOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【exises-01】ハンバーガーメニュー内訳コーナー]が表示される
+      - false にした場合の変化
+        - [【exises-01】ハンバーガーメニュー内訳コーナー]が非表示になる
+    - 初期値
+      - false
+  - isHitNoteAreaOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【common-04】検索結果表示ノートエリア]が表示される
+      - false にした場合の変化
+        - [【common-04】検索結果表示ノートエリア]が非表示になる
+        - [【common-04】検索結果表示ノートエリア]に係る変数が初期化される
+    - 初期値
+      - false
+  - isHitVideoAreaOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【common-05】検索結果表示ビデオエリア]が表示される
+      - false にした場合の変化
+        - [【common-05】検索結果表示ビデオエリア]が非表示になる
+        - [【common-05】検索結果表示ビデオエリア]に係る変数が初期化される
+    - 初期値
+      - false
+  - isLoginFormOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【nonses-01】ログインフォーム]が表示される
+      - false にした場合の変化
+        - [【nonses-01】ログインフォーム]が非表示になる
+        - [【nonses-01】ログインフォーム]に係る変数が初期化される
+    - 初期値
+      - false
+  - isNoteRegistUpdateFormOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【exises-04】ログインユーザー登録ノート一覧エリア]が表示される
+      - false にした場合の変化
+        - [【exises-04】ログインユーザー登録ノート一覧エリア]が非表示になる
+        - [【exises-04】ログインユーザー登録ノート一覧エリア]に係る変数が初期化される
+    - 初期値
+      - false
+  - isPasswordResetMailFormOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【nonses-03】パスワードリセットメール送信フォーム]が表示される
+      - false にした場合の変化
+        - [【nonses-03】パスワードリセットメール送信フォーム]が非表示になる
+        - [【nonses-03】パスワードリセットメール送信フォーム]に係る変数が初期化される
+    - 初期値
+      - false
+  - isSearchFormOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【common-03】検索フォーム]が表示される
+      - false にした場合の変化
+        - [【common-03】検索フォーム]が非表示になる
+        - [【common-03】検索フォーム]に係る変数が初期化される
+    - 初期値
+      - false
+  - isSelectedArchiveNotesTableView
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【exises-09】対象 CSV アーカイブノート一覧エリア]が表示される
+      - false にした場合の変化
+        - [【exises-09】対象 CSV アーカイブノート一覧エリア]が非表示になる
+        - [【exises-09】対象 CSV アーカイブノート一覧エリア]に係る変数が初期化される
+    - 初期値
+      - false
+  - isSelectedArchiveVideosTableView
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【exises-12】対象 CSV アーカイブビデオ一覧エリア]が表示される
+      - false にした場合の変化
+        - [【exises-12】対象 CSV アーカイブビデオ一覧エリア]が非表示になる
+        - [【exises-12】対象 CSV アーカイブビデオ一覧エリア]に係る変数が初期化される
+    - 初期値
+      - false
+  - isSelectedNoteAreaOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【common-04】検索結果表示ノートエリア]が表示される
+        - isSelectedVideoAreaOpen が false になる
+          - [【common-05】検索結果表示ビデオエリア]が非表示になる
+      - false にした場合の変化
+        - [【common-04】検索結果表示ノートエリア]が非表示になる
+        - [【common-04】検索結果表示ノートエリア]に係る変数が初期化される
+    - 初期値
+      - false
+  - isSelectedVideoAreaOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【common-05】検索結果表示ビデオエリア]が表示される
+        - isSelectedNoteAreaOpen が false になる
+          - [【common-04】検索結果表示ノートエリア]が非表示になる
+      - false にした場合の変化
+        - [【common-05】検索結果表示ビデオエリア]が非表示になる
+        - [【common-05】検索結果表示ビデオエリア]に係る変数が初期化される
+    - 初期値
+      - false
+  - isTitleLogoOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【common-02】キャッチフレーズ付きクロックコーナー]が表示される
+      - false にした場合の変化
+        - [【common-02】キャッチフレーズ付きクロックコーナー]が非表示になる
+    - 初期値
+      - false
+  - isUsersNotesCsvTableView
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【exises-08】アーカイブノート CSV タイトルテーブル]が表示される
+      - false にした場合の変化
+        - [【exises-08】アーカイブノート CSV タイトルテーブル]が非表示になる
+        - [【exises-08】アーカイブノート CSV タイトルテーブル]に係る変数が初期化される
+    - 初期値
+      - false
+  - isUsersNotesTableView
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【exises-04】ログインユーザー登録ノート一覧エリア]が表示される
+      - false にした場合の変化
+        - [【exises-04】ログインユーザー登録ノート一覧エリア]が非表示になる
+        - [【exises-04】ログインユーザー登録ノート一覧エリア]に係る変数が初期化される
+    - 初期値
+      - false
+  - isUsersVideosCsvTableView
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【exises-11】アーカイブビデオ CSV タイトルテーブル]が表示される
+      - false にした場合の変化
+        - [【exises-11】アーカイブビデオ CSV タイトルテーブル]が非表示になる
+        - [【exises-11】アーカイブビデオ CSV タイトルテーブル]に係る変数が初期化される
+    - 初期値
+      - false
+  - isUsersVideosTableView
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【exises-06】ログインユーザー登録ビデオ一覧エリア]が表示される
+      - false にした場合の変化
+        - [【exises-06】ログインユーザー登録ビデオ一覧エリア]が非表示になる
+        - [【exises-06】ログインユーザー登録ビデオ一覧エリア]に係る変数が初期化される
+    - 初期値
+      - false
+  - isVideoRegistUpdateFormOpen
+    - 概要
+      - boolean 型
+      - true にした場合の変化
+        - [【exises-06】ログインユーザー登録ビデオ一覧エリア]が表示される
+      - false にした場合の変化
+        - [【exises-06】ログインユーザー登録ビデオ一覧エリア]が非表示になる
+        - [【exises-06】ログインユーザー登録ビデオ一覧エリア]に係る変数が初期化される
+    - 初期値
+      - false

@@ -1,0 +1,456 @@
+# [【exises-05】ノート新規登録 or ノート情報更新フォーム]
+
+- 【exises-05】機能説明
+  - 特徴・機能
+    - [【exises-04】ログインユーザー登録ノート一覧エリア]で次のアクションが実行された場合に当エリアが表示される
+      - 新規作成ボタンを押下する
+        - API に送るフォームの値をいずれも空にして、新規登録モードでフォームを開く
+      - 登録ノートタイトルテーブルの編集ボタンを押下する
+        - notes_row の各パラメータを noteRegistUpdateForm に引き継いで、更新モードでフォームを開く
+  - 関連機能
+    - [【exises-04】ログインユーザー登録ノート一覧エリア]
+  - 関連変数
+    - flag.isNoteRegistUpdateFormOpen（boolean 型。初期状態は false）
+    - noteRegistUpdateForm（Object 型）
+- 【exises-05-01】ノートタイトル入力欄
+  - 特徴・機能
+    - 登録または更新するノートのタイトルを入力できる
+    - 長さは半角全角両方可能で 100 文字以内
+    - 「タイトル」のラベルを入力欄に設定する
+    - 入力必須の項目
+    - 更新の場合、内部データ「contents-id」には次の値を格納する
+      - noteRegistUpdateForm.contentsId の値を格納する
+  - 関連変数
+    - noteRegistUpdateForm.contentsId（int 型）
+    - noteRegistUpdateForm.title（String 型）
+- 【exises-05-02】URL 入力欄
+  - 特徴・機能
+    - 登録または更新するノートの URL を入力できる
+    - 「URL」のラベルを入力欄に設定する
+  - 関連変数
+    - noteRegistUpdateForm.url（String 型）
+- 【exises-05-03】サブリンク URL 入力欄
+  - 特徴・機能
+    - 初期状態は非活性
+      - URL 入力欄に、URL 形式で文字列が入力されたことが確認された場合に活性化する
+    - 登録または更新するノートのサブリンク URL を入力できる
+    - 「サブリンク URL」のラベルを入力欄に設定する
+  - 関連変数
+    - noteRegistUpdateForm.urlSub（String 型）
+- 【exises-05-04】関連ノート格納先指定テーブルコーナー
+  - 特徴・機能
+    - 関連ノートに指定するレコードの格納先名をテーブル内から指定できる
+    - 指定対象は、[ulinker_notes]テーブルまたは[ulinker_notes ～.csv]ファイル集
+      - このうち、publicity が 1、または loginUser.ownerId が created_user_id と合致するものが取得対象
+      - [ulinker_notes ～.csv]ファイル集は、API によりストレージスペースから情報を取得してくる
+    - 選択した DB テーブルまたは CSV ファイル名は、searchForm.selectedDB に格納する
+  - 関連変数
+    - dbFiles（String の List 型）
+      - 各レコードを「db_row」と呼称する
+    - searchForm.selectedDB（String の List 型）
+  - 【exises-05-04-01】関連ノート格納先指定テーブル
+    - 特徴・機能
+      - このテーブルには、関連ノートに指定するレコードの格納先となる[ulinker_notes]または[ulinker_notes ～.csv]の名称が載っている
+    - 関連変数
+      - db_row（String 型）
+    - 【exises-05-04-01-01】選択（チェックボックス）
+      - 特徴・機能
+        - チェックをつけた行の DB または CSV タイトルが、searchForm.selectedDB に格納される
+        - チェックを外した行のタイトルは、searchForm.selectedDB からは除外される
+        - 関連ノート検索ボタンが押下されると非活性になる
+      - 関連変数
+        - searchForm.selectedDB（String の List 型）
+    - 【exises-05-04-01-02】タイトル（[ulinker_notes]テーブルまたは[ulinker_notes ～.csv]ファイル集）
+      - 特徴・機能
+        - 関連ノートに指定するレコードの格納先となる[ulinker_notes]または[ulinker_notes ～.csv]の名称
+      - 関連変数
+        - db_row（String 型）
+  - 【exises-05-04-02】「次のワードをタイトルに含むノートを検索」入力欄
+    - 特徴・機能
+      - 選択した格納先に格納されるレコードのうち、どのワードをタイトルに含んでいるものを取得してくるかを、入力値により指定できる
+      - 「タイトル内に含まれるワード」のラベルを入力欄に設定する
+      - 関連ノート検索ボタンが押下されると非活性になる
+      - ここに入力した文字全体がタイトル中に含まれているものが取得対象となる
+        - 半角スペースが中間に混じっていても、区切られてこのうちのどれか一つまたはすべてが検索対象になる、ということではない
+    - 関連変数
+      - searchForm.relateNoteIncludeWord（String 型）
+  - 【exises-05-04-03】関連ノート検索ボタン
+    - 特徴・機能
+      - 押下すると API 通信が行われ、選択・入力された内容に則って関連ノートを取得してくる
+        - サーバー側 API に送信するオブジェクト変数「param」には、次の内容を格納する
+          - 『type: "getRelateNoteList"』
+          - 『keyword: this.searchForm.relateNoteIncludeWord』（半角スペースを含む場合は最初の単語）
+          - 『list: searchForm.selectedDB』
+          - 『owner_id: loginUser.ownerId』
+          - 『token: {ランダムな半角英数字 16 文字}』
+      - searchForm.relateNoteIncludeWord または searchForm.selectedDB が空の場合は非活性
+      - 押下すると非表示になる
+      - 取得されたノート集は関連ノート・共通ワード設定テーブルコーナーに反映される
+        - ノート集は searchForm.relateNotesTableData に格納される
+    - 関連変数
+      - loginUser.OwnerId（int 型）
+      - loginUser.userName（String 型）
+      - searchForm.relateNotesTableData（Object の List 型）
+        - ここでは各レコードのオブジェクト変数を「relatenote_row」とする
+        - 各要素のオブジェクト構成は、{"contentsId": (選択したノートの contents_id), "title": (選択したノートの title)}
+  - 【exises-05-04-04】他の関連ノートを探すボタン
+    - 特徴・機能
+      - 初期状態は非表示
+      - 関連ノート検索ボタンが押下されると、非表示になる関連ノート検索ボタンに代わりこの位置に表示される
+      - 押下後は非表示になる
+      - 非表示になった関連ノート検索ボタンを再度表示させる
+      - 次の部品を再度活性状態にする
+        - 関連ノート検索ボタン押下により非活性になった、関連ノート格納先指定テーブル選択チェックボックス
+        - 「次のワードをタイトルに含むノートを検索」入力欄
+      - searchForm.relateNoteIncludeWord と searchForm.selectedDB は再び空の状態とする
+        - そのため、再表示した関連ノート検索ボタンは非活性となる
+    - 関連変数
+      - searchForm.relateNoteIncludeWord
+      - searchForm.selectedDB
+- 【exises-05-05】関連ノート・共通ワード設定テーブルコーナー
+  - 特徴・機能
+    - 取得された関連ノート集を、共通ワードを入力して選択できる状態でそれぞれ反映したテーブル
+    - 関連ノート検索ボタン押下時に表示
+    - ここで選択したレコードが、noteRegistUpdateForm.relatesDataObject に反映される
+  - 関連変数
+    - searchForm.relateNotesTableData（Object の List 型）
+  - 【exises-05-05-01】関連ノート・共通ワード設定テーブル
+    - 【exises-05-05-01-01】選択（チェックボックス）
+      - 特徴・機能
+        - 次の処理が、チェックの付け外しの都度行われる
+          - 選択したノートデータが、変数「noteRegistUpdateForm.relatesDataObject」に反映される
+          - 選択を解除したものは、変数「noteRegistUpdateForm.relatesDataObject」からは除外される
+        - レコードが変数「noteRegistUpdateForm.relatesDataObject」からデータが除外された際、そのデータと一致している場合
+          - そのレコードはチェックが外れた状態になる
+        - レコードの「関連先との共通ワード」に入力がない状態の場合は非活性
+          - 入力を受け付けた場合は活性化する
+        - 内部データ「contents-id」には「relatenote_row.contentsId」を格納する
+      - 関連変数
+        - relatenote_row.contents_id（int 型）
+        - searchForm.relateNotesTableData（Object の List 型）
+    - 【exises-05-05-01-02】タイトル
+      - 特徴・機能
+        - 「relatenote_row.title」の値が反映される
+        - 内部データ「contents-id」には「relatenote_row.contentsId」を格納する
+      - 関連変数
+        - relatenote_row.contents_id（int 型）
+        - relatenote_row.title（String 型）
+    - 【exises-05-05-01-03】関連先との共通ワード
+      - 特徴・機能
+        - 対象のノートと共通しているキーワードを入力できる
+          - 文字数は 50 文字以内
+        - 「共通ワード」のラベルを入力欄に設定する
+        - レコードが選択状態になった場合は非活性になる
+          - レコードの選択が解除された場合は活性化する
+      - 関連変数
+        - relatenote_row.common_word（String 型）
+- 【exises-05-06】関連ノート・共通ワードリスト（1 件以上設定されている場合に表示）
+  - 特徴・機能
+    - 設定テーブルコーナーで選択されたノートの項目がリスト形式で表示される
+    - 関連ノートは最大で 99 件まで登録できる
+  - 関連変数
+    - noteRegistUpdateForm.relatesDataObject（Object 型）
+      - ここでは各レコードのオブジェクト変数を「selected_row」とする
+      - 各要素のオブジェクト構成は、{"contentsId": (選択したノートの contents_id), "title": (選択したノートの title), "common_word": (選択したノートの common_word)}
+  - 【exises-05-06-01】次のパーツが行ごとにリスト表示される
+    - 【exises-05-06-01-01】× ボタン
+      - 特徴・機能
+        - 設定テーブルコーナーで選択を解除する場合と同様に、変数「noteRegistUpdateForm.relatesDataObject」から選択レコードが除外される
+        - 選択除外が実行されると、設定テーブルコーナーでもそのレコードのチェックボックスが非選択状態になる
+        - 内部データ「contents-id」には「selected_row.contentsId」を格納する
+      - 関連変数
+        - relatenote_row.contents_id（int 型）
+        - searchForm.relateNotesTableData（Object の List 型）
+    - 【exises-05-06-01-02】『{ノートタイトル} （共通ワード: {共通ワード}）』
+      - 特徴・機能
+        - 次の内容がテキスト化されてリストに反映される
+          - 設定テーブルコーナーで選択されたオブジェクトの「relatenote_row.title」
+          - 設定テーブルコーナーで選択されたオブジェクトの「relatenote_row.common_word」の入力値
+        - 内部データ「contents-id」には「selected_row.contentsId」を格納する
+      - 関連変数
+        - relatenote_row.contents_id（int 型）
+        - searchForm.relateNotesTableData（Object の List 型）
+- 【exises-05-07】公開設定プルダウン
+  - 特徴・機能
+    - 登録または更新するノートの公開設定を、変数「noteRegistUpdateForm.publicity」の値に応じてプルダウンから選択できる
+  - 関連変数
+    - noteRegistUpdateForm.publicity（int 型）
+  - 【exises-05-07-01】["公開","講師にのみ公開","非公開"]
+    - 特徴・機能
+      - プルダウンの各選択肢は、変数「noteRegistUpdateForm.publicity」に対応している
+        - 2 の場合は「講師にのみ公開」
+        - 1 の場合は「公開」
+        - 0 の場合は「非公開」
+    - 関連変数
+      - noteRegistUpdateForm.publicity（int 型）
+- 【exises-05-08】選択した部分加工ボタンコーナー
+  - 特徴・機能
+    - ノート本文入力欄で選択した部分がある場合に、その部分を加工できる各種ボタンを配置したコーナー
+  - 関連変数
+    - 設定なし
+  - 【exises-05-08-01】虫食い化するボタン
+    - 特徴・機能
+      - 選択部分のテキストを虫食い状態にできる
+        - 『【[＿]{← の文字を選択範囲の文字数分}】』
+    - 関連変数
+      - 設定なし
+  - 【exises-05-08-02】半角化するボタン
+    - 特徴・機能
+      - 選択部分のテキストの半角変換可能な全角文字を半角化する
+        - 全角の『＆％＄，＠』などの記号も半角化される
+    - 関連変数
+      - 設定なし
+  - 【exises-05-08-03】【】で囲むボタン
+    - 特徴・機能
+      - 選択部分のテキストの両端を『【』と『】』で囲む
+    - 関連変数
+      - 設定なし
+  - 【exises-05-08-04】☆ で囲むボタン
+    - 特徴・機能
+      - 選択部分のテキストの両端を『☆』で囲む
+    - 関連変数
+      - 設定なし
+- 【exises-05-09】ノート本文入力欄
+  - 特徴・機能
+    - 変数「relatenote_row.text」の値が反映される
+    - 「ノートの本文」のラベルを入力欄に設定する
+    - [linker_notes.text]では左の文字で登録されていたエスケープ文字を右の文字に戻す
+      - ["&#39;","(半角シングルクォーテーション)"]
+      - ["&quot;","(半角ダブルクォーテーション)"]
+      - ["&com;","(半角カンマ)"]
+      - ["&amp;","(半角アンパサンド)"]
+      - ["&lt;","(半角小なり)"]
+      - ["&gt;","(半角大なり)"]
+      - ["&nbsp;","(半角スペース)"]
+      - ["&yen;","(半角円マーク)"]
+      - ["&copy;","(コピーライト)"]
+  - 関連変数
+    - relatenote_row.text（String 型）
+- 【exises-05-10】ノート本文バイト数
+  - 特徴・機能
+    - ノート本文の入力内容がどれ程のバイト数にのぼるのかを表す
+    - この値はノート本文入力欄で入力があるたびに更新されていく
+    - ノート本文入力欄の下に中央寄りで『現在のバイト数: {バイト数}bites』と表示される（以下、『バイト数ナビ』とする）
+      - バイト数が 65000 を超えてしまうと、その間は次の状態になる（下回れば解除される）
+        - バイト数ナビの色が赤色になる
+        - バイト数ナビの下に赤色で『バイト数が 65000 を超えているため、登録・更新できません』と表示される
+        - これで登録する or これで更新するボタンが非活性になる
+  - 関連変数
+    - relatenote_row.text（String 型）
+- 【exises-05-11】次のいずれかのボタン
+  - 特徴・機能
+    - ノート本文入力欄のテキスト整形モードを実行するためのボタン
+  - 関連変数
+    - 設定なし
+  - 【exises-05-11-01】ノート本文を整形
+    - 特徴・機能
+      - 押下するとテキスト整形モードに入る
+        - 変数「noteRegistUpdateForm.isTextModifyMode」が true になる
+      - テキスト整形モードに入るとこのボタンは非表示になる
+      - 代わって次のパーツが表示される
+        - ノート本文入力欄のテキストがどう整形されるかの説明エリア
+        - 整形内容確認済みボタン
+      - テキスト整形モードは、この[【exises-05】ノート新規登録 or ノート情報更新フォーム]を再表示させることで初期化される
+        - 変数「noteRegistUpdateForm.isTextModifyMode」が false になる
+      - ノート本文入力欄のテキストがどう整形されるかの説明エリアでは、テキストを次のように整形する旨が記述されている
+        - 『（１）まずは次の一次処理が実行されます。』
+        - 『・本文内の半角スペースは、すべて除去されます。』
+        - 『・３つ以上続く「・」または「.」は、「・」３つに統一されます。』
+        - 『・次の条件のいずれにも該当しない行は、行末の改行コードを除去して次の行と連結させます。』
+        - 『① 行頭が"●"、"■"、"◆"、"・"のいずれかである』
+        - 『② 行末が"。"、"」"、")"、"）"、"?"、"？"のいずれかである』
+        - 『（２）その上で次の二次処理が実行されます。』
+        - 『・次の条件のいずれにも該当しない行は、行頭に全角スペースを挿入します。』
+        - 『① 先頭に"●"、"■"、"◆"、"・"、全角スペースのいずれかの文字が記述されている』
+        - 『② その行には何も記述されていない』
+        - 『・次の条件に該当しない行で、文字数が 200 文字を超えている行は、200 文字に至る直前の「。」で改行します。』
+        - 『① 行頭が鍵括弧または丸括弧で始まり、行末が鍵括弧または丸括弧で終わっている』
+    - 関連変数
+      - noteRegistUpdateForm.isTextModifyMode（boolean 型。初期状態は false）
+  - 【exises-05-11-02】整形内容確認済み
+    - 特徴・機能
+      - ノート本文入力欄のテキストがどう整形されるかの説明エリアの下にこのボタンが表示される
+      - 押下すると、テキスト整形実行確認モーダルが表示される
+        - このモーダル内で「はい」を選択すると、テキスト整形処理が実行される
+        - テキスト整形処理実行後は、テキスト整形実行完了モーダルが表示される
+        - 整形されたテキストは、ノート本文入力欄に反映される
+        - noteRegistUpdateForm.isTextModifyMode」は false に戻る
+          - false に戻ると次の変化が起きる
+            - ノート本文入力欄のテキストがどう整形されるかの説明エリアが非表示になる
+            - 整形内容確認済みボタンが非表示になる
+    - 関連変数
+      - dialog.isModifyTextConfirmOpen（boolean 型。初期状態は false）
+      - dialog.isModifyTextCompleteOpen（boolean 型。初期状態は false）
+      - noteRegistUpdateForm.isTextModifyMode（boolean 型。初期状態は false）
+      - noteRegistUpdateForm.text（String 型）
+- 【exises-05-12】ノート本文をコピーボタン
+  - 特徴・機能
+    - ノート本文入力欄の入力内容をクリップボードにコピーする
+    - コピーした後は、ボタンの下に「ノート本文をコピーしました」というメッセージを表示する
+  - 関連変数
+    - noteRegistUpdateForm.text（String 型）
+- 【exises-05-13】特定文字一括置換設定コーナー
+  - 特徴・機能
+    - ノート本文入力欄入力内容における特定の文字を一括置換する
+    - 一括置換前には、一括置換確認モーダルが表示される
+      - このモーダル内で「はい」を選択すると、一括置換処理が実行される
+      - 一括置換処理完了後は、一括置換完了モーダルが表示される
+  - 関連変数
+    - dialog.isConvertStringConfirmOpen（boolean 型。初期状態は false）
+    - dialog.isConvertStringCompleteOpen（boolean 型。初期状態は false）
+    - noteRegistUpdateForm.convertBefore（String 型）
+    - noteRegistUpdateForm.convertAfter（String 型）
+    - noteRegistUpdateForm.text（String 型）
+  - 【exises-05-13-01】一括置換対象文字入力欄
+    - 特徴・機能
+      - ノート本文の置換したい対象文字を入力できる
+      - 「一括置換対象文字」のラベルを入力欄に設定する
+    - 関連変数
+      - noteRegistUpdateForm.convertBefore（String 型）
+  - 【exises-05-13-02】一括置換後文字入力欄
+    - 特徴・機能
+      - 置換対象文字をどういう文字に置換したいのかを入力できる
+      - 「一括置換後文字」のラベルを入力欄に設定する
+    - 関連変数
+      - noteRegistUpdateForm.convertAfter（String 型）
+  - 【exises-05-13-03】対象文字を一括置換するボタン
+    - 特徴・機能
+      - 初期状態は非活性
+        - 一括置換対象文字入力欄と一括置換後文字入力欄が、両方とも入力されている場合に活性化される
+      - 一括置換確認モーダルを表示して置換実行の是非を確認する
+      - このモーダル内で「はい」を選択すると、一括置換処理が実行される
+      - 一括置換処理完了後は、一括置換完了モーダルが表示される
+    - 関連変数
+      - dialog.isConvertStringConfirmOpen（boolean 型。初期状態は false）
+      - dialog.isConvertStringCompleteOpen（boolean 型。初期状態は false）
+      - noteRegistUpdateForm.text（String 型）
+- 【exises-05-14】関連動画 URL 入力ボックス
+  - 特徴・機能
+    - 登録・更新するノートに関連する動画の URL を設定できる
+      - 入力内容は、変数「noteRegistUpdateForm.relateVideoUrlInput」に反映される
+      - 改行して入力することで、最大 5 件まで動画 URL を設定可能
+      - 入力された URL は、いずれも YouTube の動画 URL の形式である必要あり
+      - noteRegistUpdateForm.relateVideoUrlInput は、改行コードで区切られて変数「noteRegistUpdateForm.relateVideoUrlList」に格納される
+    - 「関連動画 URL」のラベルを入力欄に設定する
+  - 関連変数
+    - noteRegistUpdateForm.relateVideoUrlInput（String 型）
+    - noteRegistUpdateForm.relateVideoUrlList（String の List 型）
+- 【exises-05-15】次のいずれかのボタン
+  - 【exises-05-15-01】これで登録する
+    - 特徴・機能
+      - 変数「noteRegistUpdateForm.isUpdateMode」が 0 の場合にこの新規登録ボタンになる
+      - 初期状態は非活性
+        - 以下の入力欄がすべて入力済みの状態になると活性化する
+          - ノートタイトル入力欄
+          - ノート本文入力欄
+            - 総バイト数が 65000 以内である必要がある。上回っている間は非活性
+      - バリデーションを実施した上で、入力内容を API に送り、レスポンスを受け取る
+        - バリデーションでは以下の判定を行う
+          - ノートタイトル入力欄に半角英数字、全角英数字、日本語文字のいずれも含まれていない
+          - ノート本文入力欄に半角英数字、全角英数字、日本語文字のいずれも含まれていない
+          - 関連動画 URL 入力ボックスに、YouTube の動画 URL の形式ではない記述が施された行がある
+          - 関連動画 URL 入力ボックスに記述された動画 URL が 5 件を上回っている
+        - 変数「noteRegistUpdateForm.text」と「noteRegistUpdateForm.relatesDataObject」では、以下の右の文字が左のエスケープ文字に変換された状態になる
+          - ["&#39;","(半角シングルクォーテーション)"]
+          - ["&quot;","(半角ダブルクォーテーション)"]
+          - ["&com;","(半角カンマ)"]
+          - ["&amp;","(半角アンパサンド)"]
+          - ["&lt;","(半角小なり)"]
+          - ["&gt;","(半角大なり)"]
+          - ["&nbsp;","(半角スペース)"]
+          - ["&yen;","(半角円マーク)"]
+          - ["&copy;","(コピーライト)"]
+        - ノート新規登録更新確認モーダルを表示する。以下はこのモーダルで「はい」を選択した場合
+          - ノート新規登録または更新処理のための非同期通信が実行される
+          - 非同期通信後はレスポンスが返却されるので、結果のメッセージをノート新規登録更新完了モーダルに表示する
+            - 登録・更新処理に失敗した場合はそのメッセージを表示する
+            - 登録・更新処理に成功した場合は、完了した旨のメッセージを表示する
+          - 登録・更新処理に成功した場合、3 秒後にブラウザがリロードされる
+      - サーバー側 API に送信するオブジェクト変数「param」には、次の内容を格納する
+        - 『type: "regist"』
+        - 『title: noteRegistUpdateForm.title』
+        - 『url: noteRegistUpdateForm.url』
+        - 『urlSub: noteRegistUpdateForm.urlSub』
+        - 『relatesData: noteRegistUpdateForm.relatesDataObject』
+        - 『publicity: noteRegistUpdateForm.publicity』
+        - 『text: noteRegistUpdateForm.text』
+        - 『relateVideoUrlList: noteRegistUpdateForm.relateVideoUrlList』
+        - 『createdUserId: noteRegistUpdateForm.createdUserId』
+        - 『token: {ランダムな半角英数字 16 文字}』
+    - 関連変数
+      - noteRegistUpdateForm（Object 型）
+      - dialog.isNoteRegistUpdateConfirmOpen（boolean 型。初期状態は false）
+      - dialog.isNoteRegistUpdateCompleteOpen（boolean 型。初期状態は false）
+  - 【exises-05-15-02】これで更新する
+    - 特徴・機能
+      - 変数「noteRegistUpdateForm.isUpdateMode」が 1 の場合に更新ボタンになる
+      - 初期状態は非活性
+        - 以下の入力欄がすべて入力済みの状態になると活性化する
+          - ノートタイトル入力欄
+          - ノート本文入力欄
+            - 総バイト数が 65000 以内である必要がある。上回っている間は非活性
+      - バリデーションを実施した上で、入力内容を API に送り、レスポンスを受け取る
+        - バリデーションでは以下の判定を行う
+          - ノートタイトル入力欄に半角英数字、全角英数字、日本語文字のいずれも含まれていない
+          - ノート本文入力欄に半角英数字、全角英数字、日本語文字のいずれも含まれていない
+          - 関連動画 URL 入力ボックスに、YouTube の動画 URL の形式ではない記述が施された行がある
+          - 関連動画 URL 入力ボックスに記述された動画 URL が 5 件を上回っている
+        - 変数「noteRegistUpdateForm.text」は、以下の右の文字が左のエスケープ文字に変換された状態になる
+          - ["&#39;","(半角シングルクォーテーション)"]
+          - ["&quot;","(半角ダブルクォーテーション)"]
+          - ["&com;","(半角カンマ)"]
+          - ["&amp;","(半角アンパサンド)"]
+          - ["&lt;","(半角小なり)"]
+          - ["&gt;","(半角大なり)"]
+          - ["&nbsp;","(半角スペース)"]
+          - ["&yen;","(半角円マーク)"]
+          - ["&copy;","(コピーライト)"]
+        - ノート新規登録更新確認モーダルを表示する。以下はこのモーダルで「はい」を選択した場合
+          - ノート新規登録または更新処理のための非同期通信が実行される
+          - 非同期通信後はレスポンスが返却されるので、結果のメッセージをノート新規登録更新完了モーダルに表示する
+            - 登録・更新処理に失敗した場合はそのメッセージを表示する
+            - 登録・更新処理に成功した場合は、完了した旨のメッセージを表示する
+          - 登録・更新処理に成功した場合、3 秒後にブラウザがリロードされる
+      - サーバー側 API に送信するオブジェクト変数「param」には、次の内容を格納する
+        - 『type: "update"』
+        - 『contentsId: noteRegistUpdateForm.contentsId』
+        - 『title: noteRegistUpdateForm.title』
+        - 『url: noteRegistUpdateForm.url』
+        - 『urlSub: noteRegistUpdateForm.urlSub』
+        - 『publicity: noteRegistUpdateForm.publicity』
+        - 『text: noteRegistUpdateForm.text』
+        - 『relateVideoUrlList: noteRegistUpdateForm.relateVideoUrlList』
+        - 『createdUserId: noteRegistUpdateForm.createdUserId』
+        - 『token: {ランダムな半角英数字 16 文字}』
+    - 関連変数
+      - noteRegistUpdateForm（Object 型）
+      - dialog.isNoteRegistUpdateConfirmOpen（boolean 型。初期状態は false）
+      - dialog.isNoteRegistUpdateCompleteOpen（boolean 型。初期状態は false）
+- 【exises-05-16】リセットボタン
+  - 特徴・機能
+    - 押下すると、変数「noteRegistUpdateForm」の各パラメータがレコード選択時の状態に戻る
+  - 関連変数
+    - noteRegistUpdateForm
+- 【exises-05-17】ノートをダウンロードボタン
+  - 特徴・機能
+    - 押下すると、選択されたノートの内容を反映した TXT ファイルがダウンロードされる
+      - TXT ファイル名
+        - 『{noteRegistUpdateForm.title}\_{ボタン押下時刻（yyyyMMdd_hhmmss 形式）}.txt』
+      - TXT ファイルの内容
+        - 『タイトル： {noteRegistUpdateForm.title}』
+        - 『（空白行）』
+        - 『作成者： {noteRegistUpdateForm.createdUserName}』
+        - 『登録日： {noteRegistUpdateForm.created（yyyy-mm-dd 形式に変換）}』
+        - 『最終更新日： {noteRegistUpdateForm.lastUpdated（yyyy-mm-dd 形式に変換）}』
+        - 『（空白行）』
+        - 『{noteRegistUpdateForm.textList の各 text を改行コード\n で連結させた文}』
+        - 『（空白行）』
+        - 『取得元サイト： {(noteRegistUpdateForm.url の設定あり) ? noteRegistUpdateForm.url : "設定なし"}』
+        - 条件により場合分けする
+          - noteRegistUpdateForm.createdUserId がログインユーザーのもの、且つ noteRegistUpdateForm.urlSub の設定あり
+            - 『サブリンク URL： {noteRegistUpdateForm.urlSub}』
+          - それ以外の場合
+            - 『（空白行）』
+    - 押下後は非表示になる
+  - 関連変数
+    - noteRegistUpdateForm（Object 型）

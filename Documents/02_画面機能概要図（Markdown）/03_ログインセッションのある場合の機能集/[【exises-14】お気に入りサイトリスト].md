@@ -1,0 +1,107 @@
+# [【exises-14】お気に入りサイトリスト]
+
+- 【exises-14】機能説明
+  - 特徴・機能
+    - ハンバーガーメニュー内訳コーナーで「お気に入りサイトリストを表示する」を選択すると表示される
+  - 関連機能
+    - [【exises-01】ハンバーガーメニュー内訳コーナー]
+  - 関連変数
+    - flag.isBookmarkSitesView（boolean 型。初期状態は false）
+- 【exises-14-01】新規登録ボタン
+  - 特徴・機能
+    - 入力値がいずれも空白の初期化状態にして、サイト情報登録編集フォームを表示する
+    - 変数「bookmarkRegistUpdateForm.isUpdateMode」を 0 に設定する
+  - 関連変数
+    - flag.isBookmarkRegistUpdateFormOpen（boolean 型。初期状態は false）
+    - bookmarkRegistUpdateForm（Object 型）
+- 【exises-14-02】お気に入りサイト一覧テーブル
+  - 特徴・機能
+    - API からログインユーザーが登録したお気に入りサイト情報を取得してその一部を反映したテーブル
+  - 関連変数
+    - bookmarksList（Object の List 型）
+      - 各レコードを「site_row」と呼称する
+  - 【exises-14-02-01】タイトル（リンク付き）
+    - 特徴・機能
+      - 登録されたサイトのタイトルをハイパーリンクが付いた状態で表示する
+      - タイトルを押下すると別タブでそのサイトに遷移する
+      - 内部データ「contents-id」には変数「bookmarkRegistUpdateForm.contentsId」の値を格納する
+    - 関連変数
+      - site_row.contents_id（int 型）
+      - site_row.title（String 型）
+      - site_row.url（String 型）
+  - 【exises-14-02-02】編集／削除
+    - 特徴・機能
+      - レコードごとに「編集」と「削除」のボタンを表示する
+        - 「編集」押下時
+          - site_row のパラメータ情報を変数「bookmarkRegistUpdateForm」に反映する
+          - 変数「bookmarkRegistUpdateForm.isUpdateMode」を 1 に設定する
+          - 変数「isBookmarkRegistUpdateFormOpen」を true にしてサイト情報登録編集フォームを表示する
+        - 「削除」押下時
+          - 押下すると、サイト削除確認モーダルが表示される
+          - 変数「bookmarkRegistUpdateForm.isUpdateMode」を-1 に設定する
+          - サイト削除確認モーダルで「はい」を選択すると、サイト削除完了モーダルが表示される
+          - サイト削除完了モーダルが表示された 3 秒後にブラウザがリロードされる
+      - 内部データ「contents-id」には変数「bookmarkRegistUpdateForm.contentsId」の値を格納する
+    - 関連変数
+      - site_row.contents_id（int 型）
+      - flag.isBookmarkRegistUpdateFormOpen（boolean 型。初期状態は false）
+      - bookmarkRegistUpdateForm（Object 型）
+      - dialog.isSiteDeleteConfirmOpen（boolean 型。初期状態は false）
+      - dialog.isSiteDeleteCompleteOpen（boolean 型。初期状態は false）
+- 【exises-14-03】サイト情報登録編集フォーム
+  - 特徴・機能
+    - お気に入りサイトの登録または更新を行える
+    - 初期状態では非表示。変数「bookmarkRegistUpdateForm.isUpdateMode」が 0 か 1 の場合に入力できる
+  - 関連変数
+    - bookmarkRegistUpdateForm（Object 型）
+    - flag.isBookmarkRegistUpdateFormOpen（boolean 型。初期状態は false）
+  - 【exises-14-03-01】サイト名入力欄
+    - 特徴・機能
+      - 登録または更新するサイト名を入力できる
+      - 入力必須項目
+      - 文字数上限は 100
+      - 「サイト名」のラベルを入力欄に設定する
+    - 関連変数
+      - bookmarkRegistUpdateForm.title（String 型）
+  - 【exises-14-03-02】サイト URL 入力欄
+    - 特徴・機能
+      - 登録または更新するサイトの URL を入力できる
+      - 入力必須項目
+      - 入力内容が URL 形式となっている必要がある
+      - 「URL」のラベルを入力欄に設定する
+    - 関連変数
+      - bookmarkRegistUpdateForm.url（String 型）
+  - 【exises-14-03-03】登録/更新ボタン
+    - 特徴・機能
+      - 変数「bookmarkRegistUpdateForm.isUpdateMode」の値によって表示内容が異なる
+        - 0（登録時）の場合
+          - 「登録」ボタンが表示される
+          - 初期状態は非活性
+          - 変数「bookmarkRegistUpdateForm.type」に「"regist"」を設定する
+        - 1（更新時）の場合
+          - 「更新」ボタンが表示される
+          - 変数「bookmarkRegistUpdateForm.type」に「"update"」を設定する
+      - どちらの表示時も次の事項は共通している
+        - サイト名入力欄、サイト URL 入力欄が両方とも入力済みの場合に活性化される
+        - バリデーションを実施した上で、入力内容を API に送り、レスポンスを受け取る
+          - バリデーションでは以下の判定を行う
+            - サイト名入力欄に半角英数字、全角英数字、日本語文字のいずれも含まれていない
+            - サイト URL 入力欄の入力内容が URL 形式ではない
+        - サイト新規登録更新確認モーダルを表示する。以下はこのモーダルで「はい」を選択した場合
+          - サイト新規登録または更新処理のための非同期通信が実行される
+          - 非同期通信後はレスポンスが返却されるので、結果のメッセージをサイト新規登録更新完了モーダルに表示する
+            - 登録・更新処理に失敗した場合はそのメッセージを表示する
+            - 登録・更新処理に成功した場合は、完了した旨のメッセージを表示する
+          - 登録・更新処理に成功した場合、3 秒後にブラウザがリロードされる
+        - サーバー側 API に送信するオブジェクト変数「param」には、次の内容を格納する
+          - 『type: bookmarkRegistUpdateForm.type』
+          - 『contents_id: bookmarkRegistUpdateForm.contentsId』
+          - 『title: bookmarkRegistUpdateForm.title』
+          - 『url: bookmarkRegistUpdateForm.url』
+          - 『owner_id: bookmarkRegistUpdateForm.createdUserId』
+          - 『token: {ランダムな半角英数字 16 文字}』
+    - 関連変数
+      - bookmarkRegistUpdateForm（Object 型）
+      - flag.isBookmarkRegistUpdateFormOpen（boolean 型。初期状態は false）
+      - dialog.isSiteRegistUpdateConfirmOpen（boolean 型。初期状態は false）
+      - dialog.isSiteRegistUpdateCompleteOpen（boolean 型。初期状態は false）

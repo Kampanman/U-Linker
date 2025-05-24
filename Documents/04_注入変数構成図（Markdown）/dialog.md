@@ -1,0 +1,153 @@
+# [Vue の Data に外部から注入する変数「dialog」]オブジェクト構成
+
+- オブジェクトパラメータ
+  - accountStopConfirmOpen
+    - 概要
+      - boolean 型。true になると「アカウント停止確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - accountStopRestartCompleteOpen
+    - 概要
+      - boolean 型。true になると「アカウント停止再開完了モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - alertMessageOpen
+    - 概要
+      - boolean 型。true になると「アラートメッセージモーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isConvertStringConfirmOpen
+    - 概要
+      - boolean 型。true になると「一括置換確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isConvertStringCompleteOpen
+    - 概要
+      - boolean 型。true になると「一括置換完了モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isModifyTextConfirmOpen
+    - 概要
+      - boolean 型。true になると「テキスト整形実行確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isModifyTextCompleteOpen
+    - 概要
+      - boolean 型。true になると「テキスト整形実行完了モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isCsvConvertStringConfirmOpen
+    - 概要
+      - boolean 型。true になると「CSV 一括置換確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isCsvConvertStringCompleteOpen
+    - 概要
+      - boolean 型。true になると「CSV 一括置換完了モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isCsvModifyTextConfirmOpen
+    - 概要
+      - boolean 型。true になると「CSV テキスト整形実行確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isCsvModifyTextCompleteOpen
+    - 概要
+      - boolean 型。true になると「CSV テキスト整形実行完了モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isLogoutConfirmOpen
+    - 概要
+      - boolean 型。true になると「ログアウト確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isLogoutCompleteOpen
+    - 概要
+      - boolean 型。true になると「ログアウト完了モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isModifyTextConfirmOpen
+    - 概要
+      - boolean 型。true になると「テキスト整形実行確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isModifyTextCompleteOpen
+    - 概要
+      - boolean 型。true になると「テキスト整形実行完了モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isNoteDeleteConfirmOpen
+    - 概要
+      - boolean 型。true になると「ノート削除確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isNoteDeleteCompleteOpen
+    - 概要
+      - boolean 型。true になると「ノート削除完了モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isNoteRegistUpdateConfirmOpen
+    - 概要
+      - boolean 型。true になると「ノート新規登録更新確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isNoteRegistUpdateCompleteOpen
+    - 概要
+      - boolean 型。true になると「ノート新規登録更新完了モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isReloadConfirmOpen
+    - 概要
+      - boolean 型。true になると「リロード確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isSiteDeleteConfirmOpen
+    - 概要
+      - boolean 型。true になると「サイト削除確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isSiteDeleteCompleteOpen
+    - 概要
+      - boolean 型。true になると「サイト削除完了モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isSiteRegistUpdateConfirmOpen
+    - 概要
+      - boolean 型。true になると「サイト新規登録更新確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isSiteRegistUpdateCompleteOpen
+    - 概要
+      - boolean 型。true になると「サイト新規登録更新完了モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isUserRegistUpdateConfirmOpen
+    - 概要
+      - boolean 型。true になると「ユーザー情報登録更新確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isUserRegistUpdateCompleteOpen
+    - 概要
+      - boolean 型。true になると「ユーザー情報登録更新完了モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isVideoDeleteConfirmOpen
+    - 概要
+      - boolean 型。true になると「ビデオ削除確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isVideoDeleteCompleteOpen
+    - 概要
+      - boolean 型。true になると「ビデオ削除完了モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isVideoRegistUpdateConfirmOpen
+    - 概要
+      - boolean 型。true になると「ビデオ新規登録更新確認モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false
+  - isVideoRegistUpdateCompleteOpen
+    - 概要
+      - boolean 型。true になると「ビデオ新規登録更新完了モーダル」を表示し、false になるとこれが閉じられる
+    - 初期値
+      - false

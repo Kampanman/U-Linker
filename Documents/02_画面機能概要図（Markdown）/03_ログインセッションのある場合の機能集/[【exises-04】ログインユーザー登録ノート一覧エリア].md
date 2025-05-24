@@ -1,0 +1,74 @@
+# [【exises-04】ログインユーザー登録ノート一覧エリア]
+
+- 【exises-04】機能説明
+  - 特徴・機能
+    - ハンバーガーメニュー内訳コーナーで「ノート登録編集モードに切り替える」を選択すると表示される
+    - 次の場合に、当エリアの下に[【exises-05】ノート新規登録 or ノート情報更新フォーム]が表示される
+      - 新規作成ボタンを押下する
+      - 登録ノートタイトルテーブルの編集ボタンを押下する
+  - 関連機能
+    - [【exises-01】ハンバーガーメニュー内訳コーナー]
+    - [【exises-05】ノート新規登録 or ノート情報更新フォーム]
+  - 関連変数
+    - flag.isUsersNotesTableView（boolean 型。初期状態は false）
+- 【exises-04-01】新規作成ボタン
+  - 特徴・機能
+    - 押下すると、ノート新規登録 or ノート情報更新フォームのうち、ノート新規登録の場合のフォームが表示される
+    - 変数「noteRegistUpdateForm」の「isUpdateMode」が 0 に変更される
+    - その他の「noteRegistUpdateForm」の各パラメータは、新規登録用にいずれも空白になる
+  - 関連変数
+    - noteRegistUpdateForm（Object 型）
+- 【exises-04-02】登録ノートタイトルテーブル（選択した対象のレコードが反映される）
+  - 特徴・機能
+    - API での検索により取得したユーザー登録ノートの情報の一部を反映したテーブル
+  - 関連変数
+    - notesInfoList（Object の List 型）
+      - 各レコードを「notes_row」と呼称する
+  - 【exises-04-02-01】タイトル
+    - 特徴・機能
+      - ユーザー登録ノートのタイトルを表示する
+    - 関連変数
+      - notes_row.title（String 型）
+  - 【exises-04-02-02】登録日
+    - 特徴・機能
+      - ユーザー登録ノートの登録日を表示する
+      - 表記は「yyyy-mm-dd」形式
+    - 関連変数
+      - notes_row.created（datetime 型）
+  - 【exises-04-02-03】更新日
+    - 特徴・機能
+      - ユーザー登録ノートの更新日を表示する
+      - 表記は「yyyy-mm-dd」形式
+    - 関連変数
+      - notes_row.updated（datetime 型）
+  - 【exises-04-02-04】公開範囲
+    - 特徴・機能
+      - ユーザー登録ノートの公開範囲を表示する
+        - notes_row.publicity が 0 の場合は、「非公開」
+        - notes_row.publicity が 1 の場合は、「公開」
+        - notes_row.publicity が 2 の場合は、「講師にのみ公開」
+    - 関連変数
+      - notes_row.publicity（int 型）
+  - 【exises-04-02-05】編集／削除
+    - 特徴・機能
+      - 編集ボタンと削除ボタンを表示する
+        - 編集ボタンを押下した場合
+          - その行の登録ノート情報が反映されたノート新規登録 or ノート情報更新フォームを表示する
+          - 変数「noteRegistUpdateForm」の「isUpdateMode」は 1 に変更される
+        - 削除ボタンを押下した場合
+          - 変数「noteRegistUpdateForm」の「isUpdateMode」は-1 に変更される
+          - ノート削除確認モーダルを表示する。以下はこのモーダルで「はい」を選択した場合
+            - ノートの削除処理のための非同期通信が実行される
+            - 非同期通信後はレスポンスが返却されるので、結果のメッセージをノート削除完了モーダルに表示する
+              - 削除処理に失敗した場合はそのメッセージを表示する
+              - 削除処理に成功した場合は、完了した旨のメッセージを表示する
+            - 削除処理に成功した場合、3 秒後にブラウザがリロードされる
+          - サーバー側 API に送信するオブジェクト変数「param」には、次の内容を格納する
+            - 『type: "delete"』
+            - 『contentsId: noteRegistUpdateForm.contentsId』
+            - 『createdUserId: noteRegistUpdateForm.createdUserId』
+            - 『token: {ランダムな半角英数字 16 文字}』
+    - 関連変数
+      - notes_row
+      - dialog.isNoteDeleteConfirmOpen（boolean 型。初期状態は false）
+      - dialog.isNoteDeleteCompleteOpen（boolean 型。初期状態は false）

@@ -1,0 +1,75 @@
+# [【exises-06】ログインユーザー登録ビデオ一覧エリア]
+
+- 【exises-06】機能説明
+  - 特徴・機能
+    - ハンバーガーメニュー内訳コーナーで「ビデオ登録編集モードに切り替える」を選択すると表示される
+    - 次の場合に、当エリアの下に[【exises-05】ビデオ新規登録 or ビデオ情報更新フォーム]が表示される
+      - 新規作成ボタンを押下する
+      - 登録ビデオタイトルテーブルの編集ボタンを押下する
+  - 関連機能
+    - [【exises-01】ハンバーガーメニュー内訳コーナー]
+    - [【exises-05】ビデオ新規登録 or ビデオ情報更新フォーム]
+  - 関連変数
+    - flag.isUsersVideosTableView（boolean 型。初期状態は false）
+- 【exises-06-01】新規作成ボタン
+  - 特徴・機能
+    - 押下すると、ビデオ新規登録 or ビデオ情報更新フォームのうち、ビデオ新規登録の場合のフォームが表示される
+    - 変数「videoRegistUpdateForm」の「isUpdateMode」が 0 に変更される
+    - その他の「videoRegistUpdateForm」の各パラメータは、新規登録用にいずれも空白になる
+  - 関連変数
+    - videoRegistUpdateForm（Object 型）
+- 【exises-06-02】登録ビデオタイトルテーブル（選択した対象のレコードが反映される）
+  - 特徴・機能
+    - ユーザー登録ビデオの情報の一部を反映したテーブル
+  - 関連変数
+    - videosInfoList（Object の List 型）
+      - 各レコードを「videos_row」と呼称する
+  - 【exises-06-02-01】再生
+  - 【exises-06-02-02】タイトル
+    - 特徴・機能
+      - ユーザー登録ビデオのタイトルを表示する
+    - 関連変数
+      - videos_row.title（String 型）
+  - 【exises-06-02-03】登録日
+    - 特徴・機能
+      - ユーザー登録ビデオの登録日時を表示する
+      - 表記は「yyyy-mm-dd」形式
+    - 関連変数
+      - videos_row.created（datetime 型）
+  - 【exises-06-02-04】更新日
+    - 特徴・機能
+      - ユーザー登録ビデオの更新日を表示する
+      - 表記は「yyyy-mm-dd」形式
+    - 関連変数
+      - videos_row.updated（datetime 型）
+  - 【exises-06-02-05】公開範囲
+    - 特徴・機能
+      - ユーザー登録ビデオの公開範囲を表示する
+        - videos_row.publicity が 0 の場合は、「非公開」
+        - videos_row.publicity が 1 の場合は、「公開」
+        - videos_row.publicity が 2 の場合は、「講師にのみ公開」
+    - 関連変数
+      - videos_row.publicity（int 型）
+  - 【exises-06-02-06】編集／削除
+    - 特徴・機能
+      - 編集ボタンと削除ボタンを表示する
+        - 編集ボタンを押下した場合
+          - その行の登録ビデオ情報が反映されたビデオ新規登録 or ビデオ情報更新フォームを表示する
+          - 変数「videoRegistUpdateForm」の「isUpdateMode」は 1 に変更される
+        - 削除ボタンを押下した場合
+          - 変数「videoRegistUpdateForm」の「isUpdateMode」は-1 に変更される
+          - ビデオ削除確認モーダルを表示する。以下はこのモーダルで「はい」を選択した場合
+            - ビデオの削除処理のための非同期通信が実行される
+            - 非同期通信後はレスポンスが返却されるので、結果のメッセージをビデオ削除完了モーダルに表示する
+              - 削除処理に失敗した場合はそのメッセージを表示する
+              - 削除処理に成功した場合は、完了した旨のメッセージを表示する
+            - 削除処理に成功した場合、3 秒後にブラウザがリロードされる
+          - サーバー側 API に送信するオブジェクト変数「param」には、次の内容を格納する
+            - 『type: "delete"』
+            - 『contentsId: videoRegistUpdateForm.contentsId』
+            - 『createdUserId: videoRegistUpdateForm.createdUserId』
+            - 『token: {ランダムな半角英数字 16 文字}』
+    - 関連変数
+      - videos_row
+      - dialog.isVideoDeleteConfirmOpen（boolean 型。初期状態は false）
+      - dialog.isVideoDeleteCompleteOpen（boolean 型。初期状態は false）

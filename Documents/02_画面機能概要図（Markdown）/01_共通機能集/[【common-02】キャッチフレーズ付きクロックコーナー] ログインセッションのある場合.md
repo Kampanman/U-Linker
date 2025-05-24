@@ -1,0 +1,41 @@
+# [【common-02】キャッチフレーズ付きクロックコーナー] ログインセッションのある場合
+
+- 【common-02】機能説明
+  - 特徴・機能
+    - 本サービス「U-Linker」のキーコンセプトを表す見出し文字列と、西暦日時＆曜日を表示する
+  - 関連機能
+    - 設定なし
+  - 関連変数
+    - flag.isTitleLogoOpen（boolean 型。初期状態は true）
+- 【common-02-exises-01】ログインユーザーのユーザー名と権限を反映したキャッチフレーズ
+  - 特徴・機能
+    - 本サービス「U-Linker」のキーコンセプトを表す見出し文字列
+    - ログインユーザーの「ユーザー名」と「講師権限」に応じて表示内容は変わる
+    -
+    - キーコンセプト
+      - 小見出し
+        - loginUser.isMaster が 0 の場合
+          - 『{loginUser.userName}よ　ナニゴトも　それ単体で　記憶すな　他事詰め込みゃ　ヌケるが　オチだ』
+        - loginUser.isMaster が 1 の場合
+          - 『グランドマスター・{loginUser.userName}よ　ナニゴトも　それ単体で　記憶すな　他事詰め込みゃ　ヌケるが　オチだ』
+      - 大見出し
+        - 講師権限（loginUser.isTeacher）が 0 の場合
+          - 『丈夫な根を張る 記憶を つくろう』
+        - 講師権限（loginUser.isTeacher）が 1 の場合
+          - 『記憶とともにあらんことを』
+  - 関連変数
+    - loginUser.userName（String 型）
+    - loginUser.isTeacher（int 型。「講師権限」がある場合は 1）
+    - loginUser.isMaster（int 型）
+      - テーブル「ulinker_accounts」で、「is_teacher」が 1 のユーザーのうち id が最も若いユーザーの場合に 1
+- 【common-02-01】クロック
+  - 特徴・機能
+    - 現在の日本時間を表す西暦日時＆曜日の文字列
+    - 1 秒ごとに表示内容が最新化される
+      - クロック例
+        - 上段
+          - 2025.03.20 THU
+        - 下段
+          - 19:00:00
+  - 関連変数
+    - 設定なし

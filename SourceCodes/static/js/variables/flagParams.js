@@ -1,0 +1,28 @@
+let flagParams = {
+  isAccountRegistFormOpen: false,
+  isAccountsTableView: false,
+  isAccountRegistUpdateFormOpen: false,
+  isArchiveNoteUpdateFormOpen: false,
+  isArchiveVideoUpdateFormOpen: false,
+  isBookmarkSitesView: false,
+  isBookmarkRegistUpdateFormOpen: false,
+  isHbDialogOpen: false,
+  isHitNoteAreaOpen: false,
+  isHitVideoAreaOpen: false,
+  isLoginFormOpen: false,
+  isNoteRegistUpdateFormOpen: false,
+  isPasswordResetMailFormOpen: false,
+  isSearchFormOpen: false,
+  isSelectedArchiveNotesTableView: false,
+  isSelectedArchiveVideosTableView: false,
+  isSelectedNoteAreaOpen: false,
+  isSelectedVideoAreaOpen: false,
+  isTitleLogoOpen: false,
+  isUsersNotesCsvTableView: false,
+  isUsersNotesTableView: false,
+  isUsersVideosCsvTableView: false,
+  isUsersVideosTableView: false,
+  isVideoRegistUpdateFormOpen: false,
+};
+
+export default flagParams;

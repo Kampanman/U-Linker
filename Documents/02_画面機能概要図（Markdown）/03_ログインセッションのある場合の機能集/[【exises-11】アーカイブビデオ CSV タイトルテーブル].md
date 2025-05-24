@@ -1,0 +1,29 @@
+# [【exises-11】アーカイブビデオ CSV タイトルテーブル]
+
+- 【exises-11】機能説明
+  - 特徴・機能
+    - ハンバーガーメニュー内訳コーナーで「アーカイブビデオ一覧モードに切り替える」を選択すると表示される
+    - 取得対象となる CSV ファイル
+      - ストレージスペース[storage/csv]上に保管されている、タイトルに[ulinker_videos]を含むアーカイブ CSV ファイル
+    - 次の場合に、当エリアの下に[【exises-12】対象 CSV アーカイブビデオ一覧エリア]が表示される
+      - 表示されたテーブル内で、CSV タイトル右横の「選択」を押下
+  - 関連機能
+    - [【exises-01】ハンバーガーメニュー内訳コーナー]
+    - [【exises-12】対象 CSV アーカイブビデオ一覧エリア]
+  - 関連変数
+    - flag.isUsersVideosCsvTableView（boolean 型。初期状態は false）
+    - videoCsv.getFiles（String の List 型）
+      - ここに取得した CSV ファイルの情報を格納する
+      - ここからは各レコードを「file_row」と呼称する
+- 【exises-11-01】CSV タイトル
+  - 特徴・機能
+    - 取得した CSV ファイルの名称
+  - 関連変数
+    - file_row.name（String 型）
+- 【exises-11-02】選択
+  - 特徴・機能
+    - 押下すると、その CSV ファイルの情報を[【exises-12】対象 CSV アーカイブビデオ一覧エリア]に送信する
+    - [【exises-12】対象 CSV アーカイブビデオ一覧エリア]が表示される
+    - 内部データ「filename」には変数「file_row.name」の値が格納されている
+  - 関連変数
+    - file_row.name（String 型）

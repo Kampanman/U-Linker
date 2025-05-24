@@ -1,0 +1,33 @@
+# [Vue の Data に外部から注入する変数「loginUser」]オブジェクト構成
+
+- オブジェクトパラメータ
+  - ownerId
+    - 概要
+      - ログインユーザーの「owner_id」が、[ulinker_accounts.owner_id]からこの変数に格納される
+    - 初期値
+      - 0
+  - email
+    - 概要
+      - ログインユーザーの「email」が、[ulinker_accounts.email]からこの変数に格納される
+    - 初期値
+      - 空文字（ダブルクォーテーションのみ）
+  - userName
+    - 概要
+      - ログインユーザーの「name」が、[ulinker_accounts.name]からこの変数に格納される
+    - 初期値
+      - 空文字（ダブルクォーテーションのみ）
+  - isTeacher
+    - 概要
+      - ログインユーザーの「is_teacher」が、[ulinker_accounts.is_teacher]からこの変数に格納される
+    - 初期値
+      - 0
+  - isMaster
+    - 概要
+      - ログインユーザーの「is_master」が、[ulinker_accounts.is_master]からこの変数に格納される
+    - 初期値
+      - 0
+  - comment
+    - 概要
+      - ログインユーザーの「comment」が、[ulinker_accounts.comment]からこの変数に格納される
+    - 初期値
+      - 空文字（ダブルクォーテーションのみ）

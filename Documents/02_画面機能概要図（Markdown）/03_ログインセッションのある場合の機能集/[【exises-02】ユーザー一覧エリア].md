@@ -1,0 +1,99 @@
+# [【exises-02】ユーザー一覧エリア]
+
+- 【exises-02】機能説明
+  - 特徴・機能
+    - ハンバーガーメニュー内訳コーナーで、次の条件を満たしたうえで「ユーザー登録編集モードに切り替える」を選択すると表示される
+      - ログインユーザーの講師権限が 1
+  - 関連機能
+    - [【exises-01】ハンバーガーメニュー内訳コーナー]
+    - [【exises-03】ユーザー新規登録 or ユーザー情報更新フォーム]
+  - 関連変数
+    - flag.isAccountsTableView（boolean 型。初期状態は false）
+- 【exises-02-01】新規登録ボタン
+  - 特徴・機能
+    - 押下すると、ユーザー新規登録 or ユーザー情報更新フォームのうち、ユーザー新規登録の場合のフォームが表示される
+    - 変数「accountRegistUpdateForm」の各パラメータは、新規登録用にいずれも空白になる
+  - 関連変数
+    - accountRegistUpdateForm（Object 型）
+- 【exises-02-02】自分のアカウントを編集ボタン
+  - 特徴・機能
+    - 初期状態では非表示。新規登録ボタンか、他ユーザーの「編集」ボタンが押下された後に表示される
+    - 自分のアカウントを編集している場合は非表示
+    - 押下すると、ユーザー新規登録 or ユーザー情報更新フォームのうち、ユーザー情報更新の場合のフォームが表示される
+    - 変数「accountRegistUpdateForm」の以下のパラメータには、API 通信により取得された自分のアカウントに関する情報が反映される
+      - accountRegistUpdateForm.ownerId
+      - accountRegistUpdateForm.userName
+      - accountRegistUpdateForm.loginId
+      - accountRegistUpdateForm.comment
+    - 関連変数
+      - accountRegistUpdateForm.ownerId（int 型）
+      - accountRegistUpdateForm.userName（String 型）
+      - accountRegistUpdateForm.loginId（String 型）
+      - accountRegistUpdateForm.comment（String 型）
+- 【exises-02-03】登録アカウントテーブル
+  - 特徴・機能
+    - API から登録されているアカウントの情報を取得してその一部を反映したテーブル
+    - ログイン中のユーザーのアカウント情報はここには表示されない
+      - ログイン中のユーザーは、自分のアカウントを編集ボタンを押下することでアカウントの編集ができる
+  - 関連変数
+    - accountsInfoList（Object の List 型）
+      - 各レコードを「accounts_row」と呼称する
+  - 【exises-02-03-01】ユーザー名
+    - 特徴・機能
+      - 登録されているアカウントのユーザー名を表示する
+      - 内部データ「owner_id」には accounts_row.ownerId の値を格納する
+        - accounts_row.ownerId には[ulinker_accounts.owner_id]の値を充当する
+    - 関連変数
+      - accounts_row.ownerId（int 型）
+      - accounts_row.userName（String 型）
+  - 【exises-02-03-02】権限
+    - 特徴・機能
+      - 登録されているアカウントの権限を表示する
+        - [ulinker_accounts.is_teacher]が 0 の場合は「一般」
+        - [ulinker_accounts.is_teacher]が 1 の場合は「講師」
+    - 関連変数
+      - accounts_row.authName（String 型）
+  - 【exises-02-03-03】登録日時
+    - 特徴・機能
+      - 登録されているアカウントの登録日時を表示する
+      - 表記は「yyyy-mm-dd HH:MM:SS」形式
+    - 関連変数
+      - accounts_row.created（datetime 型）
+  - 【exises-02-03-04】編集
+    - 特徴・機能
+      - 編集ボタンを表示する
+      - 押下すると、その行のアカウント情報が反映されたユーザー情報更新フォームを表示する
+      - 変数「loginUser.isMaster」が 1 の場合
+        - 編集ボタン横に停止／再開ボタンも表示する
+          - ボタン表示中のステータス
+            - [ulinker_accounts.is_stop]が 0 の場合はアカウントがアクティブで「停止」可能
+            - [ulinker_accounts.is_stop]が 1 の場合はアカウントが停止中で「再開」可能
+          - 「停止」表示中に押下した場合
+            - アカウント停止確認モーダルを表示する。以下はこのモーダルで「はい」を選択した場合
+              - ユーザー情報の更新処理のための非同期通信が実行される
+                - 対象アカウントの[ulinker_accounts.is_stop]が 0 から 1 に変更される
+              - 非同期通信後はレスポンスが返却されるので、結果のメッセージをアカウント停止再開完了モーダルに表示する
+                - 登録・更新処理に失敗した場合はそのメッセージを表示する
+                - 登録・更新処理に成功した場合は、完了した旨のメッセージを表示する
+              - 対象アカウントが停止状態になる
+                - 対象アカウントのユーザーはログインできなくなる
+                - ログインフォームでは、ログイン実行時にアカウントが停止された旨を表示する
+          - 「再開」表示中に押下した場合
+            - ユーザー情報の更新処理のための非同期通信が実行される
+              - 対象アカウントの[ulinker_accounts.is_stop]が 1 から 0 に変更される
+            - 非同期通信後はレスポンスが返却されるので、結果のメッセージをアカウント停止再開完了モーダルに表示する
+              - 登録・更新処理に失敗した場合はそのメッセージを表示する
+              - 登録・更新処理に成功した場合は、完了した旨のメッセージを表示する
+            - 対象アカウントが利用可能状態になる
+              - 対象アカウントのユーザーは通常通りログインできる
+        - サーバー側 API に送信するオブジェクト変数「param」には、次の内容を格納する
+          - 『type: "changeStatus"』
+          - 『userId: accounts_row.ownerId』
+          - 『isStop: {停止の場合は 1、再開の場合は 0}』
+          - 『updatedUserId: {ログイン中ユーザーの ownerId}』
+          - 『token: {ランダムな半角英数字 16 文字}』
+    - 関連変数
+      - accounts_row
+      - dialog.accountStopConfirmOpen（boolean 型。初期状態は false）
+      - dialog.accountStopRestartCompleteOpen（boolean 型。初期状態は false）
+      - loginUser.isMaster（int 型。[【common-02】キャッチフレーズ付きクロックコーナー]で言及）

@@ -1,0 +1,119 @@
+# [【exises-07】ビデオ新規登録 or ビデオ情報更新フォーム]
+
+- 【exises-07】機能説明
+  - 特徴・機能
+    - [【exises-06】ログインユーザー登録ビデオ一覧エリア]で次のアクションが実行された場合に当エリアが表示される
+      - 新規作成ボタンを押下する
+        - API に送るフォームの値をいずれも空にして、新規登録モードでフォームを開く
+      - 登録ビデオタイトルテーブルの編集ボタンを押下する
+        - videos_row の各パラメータを videoRegistUpdateForm に引き継いで、更新モードでフォームを開く
+  - 関連機能
+    - [【exises-06】ログインユーザー登録ビデオ一覧エリア]
+  - 関連変数
+    - flag.isVideoRegistUpdateFormOpen（boolean 型。初期状態は false）
+    - videoRegistUpdateForm（Object 型）
+- 【exises-07-01】ビデオタイトル入力欄
+  - 特徴・機能
+    - 登録または更新するビデオのタイトルを入力できる
+    - 長さは半角全角両方可能で 100 文字以内
+    - 「タイトル」のラベルを入力欄に設定する
+    - 入力必須の項目
+    - 更新の場合、内部データ「contents-id」には次の値を格納する
+      - videoRegistUpdateForm.contentsId の値を格納する
+  - 関連変数
+    - videoRegistUpdateForm.contentsId（int 型）
+    - videoRegistUpdateForm.title（String 型）
+- 【exises-07-02】URL 入力欄
+  - 特徴・機能
+    - 登録または更新するビデオの URL を入力できる
+    - 「URL」のラベルを入力欄に設定する
+    - 入力必須の項目
+    - youtube の動画 URL（<https://www.youtube.com/watch?v={識別文字}>の形式）である必要がある
+  - 関連変数
+    - videoRegistUpdateForm.url（String 型）
+- 【exises-07-03】ビデオタグ入力欄
+  - 特徴・機能
+    - 登録または更新するビデオのタグワードを入力できる
+    - 長さは半角全角両方可能で 100 文字以内
+    - 「タグワード」のラベルを入力欄に設定する
+  - 関連変数
+    - videoRegistUpdateForm.tag（String 型）
+- 【exises-07-04】公開設定プルダウン
+  - 特徴・機能
+    - 登録または更新するビデオの公開設定を、変数「videoRegistUpdateForm.publicity」の値に応じてプルダウンから選択できる
+  - 関連変数
+    - videoRegistUpdateForm.publicity（int 型）
+  - 【exises-07-04-01】["公開","講師にのみ公開","非公開"]
+    - 特徴・機能
+    - プルダウンの各選択肢は、変数「videoRegistUpdateForm.publicity」に対応している
+      - 2 の場合は「講師にのみ公開」
+      - 1 の場合は「公開」
+      - 0 の場合は「非公開」
+    - 関連変数
+      - videoRegistUpdateForm.publicity（int 型）
+- 【exises-07-05】次のいずれかのボタン
+  - 【exises-07-05-01】これで登録する
+    - 変数「videoRegistUpdateForm.isUpdateMode」が 0 の場合にこの新規登録ボタンになる
+    - 初期状態は非活性
+      - 以下の入力欄がすべて入力済みの状態になると活性化する
+        - ビデオタイトル入力欄
+        - URL 入力欄
+    - バリデーションを実施した上で、入力内容を API に送り、レスポンスを受け取る
+      - バリデーションでは以下の判定を行う
+        - ビデオタイトル入力欄に半角英数字、全角英数字、日本語文字のいずれも含まれていない
+        - ビデオタグ入力欄に半角英数字、全角英数字、日本語文字のいずれも含まれていない
+        - URL 入力欄に youtube 動画の URL ではない内容が入力されている
+      - ビデオ新規登録更新確認モーダルを表示する。以下はこのモーダルで「はい」を選択した場合
+        - ビデオ新規登録または更新処理のための非同期通信が実行される
+        - 非同期通信後はレスポンスが返却されるので、結果のメッセージをビデオ新規登録更新完了モーダルに表示する
+          - 登録・更新処理に失敗した場合はそのメッセージを表示する
+          - 登録・更新処理に成功した場合は、完了した旨のメッセージを表示する
+        - 登録・更新処理に成功した場合、3 秒後にブラウザがリロードされる
+    - サーバー側 API に送信するオブジェクト変数「param」には、次の内容を格納する
+      - 『type: "regist"』
+      - 『title: videoRegistUpdateForm.title』
+      - 『url: videoRegistUpdateForm.url』
+      - 『publicity: videoRegistUpdateForm.publicity』
+      - 『tag: videoRegistUpdateForm.tag』
+      - 『createdUserId: videoRegistUpdateForm.createdUserId』
+      - 『token: {ランダムな半角英数字 16 文字}』
+    - 関連変数
+      - videoRegistUpdateForm（Object 型）
+      - dialog.isvideoRegistUpdateConfirmOpen（boolean 型。初期状態は false）
+      - dialog.isvideoRegistUpdateCompleteOpen（boolean 型。初期状態は false）
+  - 【exises-07-05-02】これで更新する
+    - 特徴・機能
+      - 変数「videoRegistUpdateForm.isUpdateMode」が 1 の場合に更新ボタンになる
+      - 初期状態は非活性
+        - 以下の入力欄がすべて入力済みの状態になると活性化する
+          - ビデオタイトル入力欄
+          - URL 入力欄
+      - バリデーションを実施した上で、入力内容を API に送り、レスポンスを受け取る
+        - バリデーションでは以下の判定を行う
+          - ビデオタイトル入力欄に半角英数字、全角英数字、日本語文字のいずれも含まれていない
+          - ビデオタグ入力欄に半角英数字、全角英数字、日本語文字のいずれも含まれていない
+          - URL 入力欄に youtube 動画の URL ではない内容が入力されている
+        - ビデオ新規登録更新確認モーダルを表示する。以下はこのモーダルで「はい」を選択した場合
+          - ビデオ新規登録または更新処理のための非同期通信が実行される
+          - 非同期通信後はレスポンスが返却されるので、結果のメッセージをビデオ新規登録更新完了モーダルに表示する
+            - 登録・更新処理に失敗した場合はそのメッセージを表示する
+            - 登録・更新処理に成功した場合は、完了した旨のメッセージを表示する
+          - 登録・更新処理に成功した場合、3 秒後にブラウザがリロードされる
+      - サーバー側 API に送信するオブジェクト変数「param」には、次の内容を格納する
+        - 『type: "update"』
+        - 『contentsId: videoRegistUpdateForm.contentsId』
+        - 『title: videoRegistUpdateForm.title』
+        - 『url: videoRegistUpdateForm.url』
+        - 『publicity: videoRegistUpdateForm.publicity』
+        - 『tag: videoRegistUpdateForm.tag』
+        - 『createdUserId: videoRegistUpdateForm.createdUserId』
+        - 『token: {ランダムな半角英数字 16 文字}』
+      - 関連変数
+        - videoRegistUpdateForm（Object 型）
+        - dialog.isvideoRegistUpdateConfirmOpen（boolean 型。初期状態は false）
+        - dialog.isvideoRegistUpdateCompleteOpen（boolean 型。初期状態は false）
+  - 【exises-07-05-03】リセット
+    - 特徴・機能
+      - 押下すると、変数「videoRegistUpdateForm」の各パラメータがレコード選択時の状態に戻る
+    - 関連変数
+      - videoRegistUpdateForm

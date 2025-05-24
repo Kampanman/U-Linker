@@ -1,0 +1,296 @@
+# [【exises-03】ユーザー新規登録 or ユーザー情報更新フォーム]
+
+- 【exises-03】機能説明
+  - 特徴・機能
+    - ハンバーガーメニュー内訳コーナー、またはユーザー一覧エリアから引き継いだユーザー情報を反映したフォームを表示する
+      - ユーザー一覧エリアは、ログインユーザーの講師権限が 1 の場合に表示される
+        - そのため、講師権限が 0 である「一般」のユーザーは、自分のアカウントの更新のみを実行できる
+      - 講師権限問わず実行可能
+        - ハンバーガーメニュー内訳コーナーで「ユーザー登録編集モードに切り替える」が押下された場合
+          - 変数「accountRegistUpdateForm.isUpdateMode」が true に設定される
+          - 変数「accountRegistUpdateForm.isOwnAccount」が true に設定される
+          - ログインユーザーのアカウント情報が反映されたユーザー情報フォーム表示される
+      - 講師権限が 1 の場合のみ実行可能
+        - ユーザー一覧エリアで、自分のアカウントを編集ボタンが押下された場合
+          - 変数「accountRegistUpdateForm.isUpdateMode」が true に設定される
+          - 変数「accountRegistUpdateForm.isOwnAccount」が true に設定される
+          - ログインユーザーのアカウント情報が反映されたユーザー情報フォーム表示される
+        - ユーザー一覧エリアの登録アカウントテーブルで、編集ボタンが押下された場合
+          - 変数「accountRegistUpdateForm.isUpdateMode」が true に設定される
+          - 変数「accountRegistUpdateForm.isOwnAccount」が false に設定される
+          - 対象ユーザーのアカウント情報が反映されたユーザー情報フォーム表示される
+        - ユーザー一覧エリアで、新規登録ボタンが押下された場合
+          - 変数「accountRegistUpdateForm.isUpdateMode」が false に設定される
+          - 変数「accountRegistUpdateForm.isOwnAccount」が false に設定される
+          - ユーザー情報フォームが表示される
+  - 関連機能
+    - [【exises-01】ハンバーガーメニュー内訳コーナー]
+    - [【exises-02】ユーザー一覧エリア]
+  - 関連変数
+    - flag.isAccountRegistUpdateFormOpen（boolean 型。初期状態は false）
+- 【exises-03-01】ユーザー新規登録の場合
+  - 特徴・機能
+    - ユーザー一覧エリアで、新規登録ボタンが押下された場合に、入力欄がいずれも空白のユーザー情報フォームを表示する
+  - 関連変数
+    - accountRegistUpdateForm（Object 型）
+    - flag.isAccountRegistUpdateFormOpen
+  - 【exises-03-01-01】ユーザー名入力欄
+    - 特徴・機能
+      - 登録するアカウントのユーザー名を入力できる
+      - 「ユーザー名」のラベルを入力欄に設定する
+      - 長さは半角全角両方可能で 30 文字以内
+      - 入力必須の項目
+    - 関連変数
+      - accountRegistUpdateForm.userName（String 型）
+  - 【exises-03-01-02】ログイン ID（email アドレス）入力欄
+    - 特徴・機能
+      - 登録するアカウントのログイン ID（email アドレス）を入力できる
+      - 「ログイン ID（email アドレス）」のラベルを入力欄に設定する
+      - メールアドレス形式の必要あり。半角英数字と一部特殊記号の入力が可能
+      - 長さは 100 文字以内
+      - 入力必須の項目
+    - 関連変数
+      - accountRegistUpdateForm.loginId（String 型）
+  - 【exises-03-01-03】パスワード入力欄(1)
+    - 特徴・機能
+      - 登録するアカウントのパスワードを入力できる
+      - 「パスワード（半角英数字 8 文字以上 16 文字以内）」のラベルを入力欄に設定する
+      - 長さは半角英数字 8 文字以上 16 字以内
+      - 入力必須の項目
+    - 関連変数
+      - accountRegistUpdateForm.password1（String 型）
+  - 【exises-03-01-04】パスワード入力欄(2)
+    - 特徴・機能
+      - 登録するアカウントのパスワードを入力できる
+      - 「パスワード（半角英数字 8 文字以上 16 文字以内）」のラベルを入力欄に設定する
+      - パスワード入力欄(1)の入力内容と合致している必要がある
+      - 入力必須の項目
+    - 関連変数
+      - accountRegistUpdateForm.password2（String 型）
+  - 【exises-03-01-05】ユーザーコメント入力欄
+    - 特徴・機能
+      - 登録するアカウントのユーザーが任意に設定できるコメントを入力できる
+      - 「コメント」のラベルを入力欄に設定する
+      - 入力は任意
+      - 長さは半角全角両方可能で 100 文字以内
+    - 関連変数
+      - accountRegistUpdateForm.comment（String 型）
+  - 【exises-03-01-06】新規登録ボタン
+    - 特徴・機能
+      - 変数「accountRegistUpdateForm.isUpdateMode」が false の場合にこの新規登録ボタンになる
+      - 初期状態は非活性
+        - ユーザーコメント入力欄以外の入力欄がすべて入力済みの状態になると活性化する
+          - ユーザーコメント入力欄が空白状態となっても、非活性にはならない
+      - バリデーションを実施した上で、入力内容を API に送り、レスポンスを受け取る
+        - バリデーションでは以下の判定を行う
+          - ユーザー名に不適切な文字（半角の特殊な記号）が含まれている
+          - ログイン ID がメールアドレスの形式ではない
+          - ログイン ID に（全角文字などの）不適切な文字が含まれている
+          - パスワード(1)が半角英数字 8 文字以上 16 文字以内の形式ではない
+          - パスワード(1)とパスワード(2)が合致していない
+        - 変数「accountRegistUpdateForm.isTeacher」は、自動的に 0 に設定される
+        - 変数「accountRegistUpdateForm.comment」は、以下の右の文字が左のエスケープ文字に変換された状態になる
+          - ["&#39;","(半角シングルクォーテーション)"]
+          - ["&quot;","(半角ダブルクォーテーション)"]
+          - ["&com;","(半角カンマ)"]
+          - ["&amp;","(半角アンパサンド)"]
+          - ["&lt;","(半角小なり)"]
+          - ["&gt;","(半角大なり)"]
+          - ["&nbsp;","(半角スペース)"]
+          - ["&yen;","(半角円マーク)"]
+          - ["&copy;","(コピーライト)"]
+        - ユーザー情報登録更新確認モーダルを表示する。以下はこのモーダルで「はい」を選択した場合
+          - ユーザー情報の登録・更新処理のための非同期通信が実行される
+          - 非同期通信後はレスポンスが返却されるので、結果のメッセージをユーザー情報登録更新完了モーダルに表示する
+            - 登録・更新処理に失敗した場合はそのメッセージを表示する
+            - 登録・更新処理に成功した場合は、完了した旨のメッセージを表示する
+          - 登録・更新処理に成功した場合、3 秒後にブラウザがリロードされる
+      - サーバー側 API に送信するオブジェクト変数「param」には、次の内容を格納する
+        - 『type: "regist"』
+        - 『userName: accountRegistUpdateForm.userName』
+        - 『email: accountRegistUpdateForm.loginId』
+        - 『password: accountRegistUpdateForm.password1』
+        - 『isTeacher: accountRegistUpdateForm.isTeacher』
+        - 『isOwner: 0』
+        - 『comment: accountRegistUpdateForm.comment』
+        - 『updatedUserId: {ログイン中ユーザーの ownerId}』
+        - 『token: {ランダムな半角英数字 16 文字}』
+    - 関連変数
+      - accountRegistUpdateForm（Object 型）
+      - dialog.isUserRegistUpdateConfirmOpen（boolean 型。初期状態は false）
+      - dialog.isUserRegistUpdateCompleteOpen（boolean 型。初期状態は false）
+  - 【exises-03-01-07】リセットボタン
+    - 特徴・機能
+      - フォーム内のすべての入力欄を空白状態に戻す
+        - つまり registForm のすべてのプロパティが空文字状態となる
+    - 関連変数
+      - 設定なし
+- 【exises-03-02】ユーザー情報更新の場合
+  - 特徴・機能
+    - ログインユーザーまたは編集対象ユーザーのアカウント情報を反映したユーザー情報フォームを表示する
+    - 次の場合は、フォームを表示できても情報の更新は実行できない
+      - [ulinker_accounts.is_teacher]が 0 且つ変数「accountRegistUpdateForm.isOwnAccount」が false
+        - ログインユーザーの権限が「講師」ではなく、選択したアカウントがログインユーザーのものではない
+        - この場合は更新ボタンが表示されない
+  - 関連変数
+    - accountRegistUpdateForm（Object 型）
+    - flag.isAccountRegistUpdateFormOpen
+  - 【exises-03-02-01】ユーザー名入力欄
+    - 特徴・機能
+      - 登録するアカウントのユーザー名を入力できる
+      - 「ユーザー名」のラベルを入力欄に設定する
+      - 長さは半角全角両方可能で 30 文字以内
+      - 「accountRegistUpdateForm.isOwnAccount」が false の場合は非活性
+      - 内部データ「owner_id」には accountRegistUpdateForm.ownerId の値を格納する
+        - accountRegistUpdateForm.ownerId がログインユーザーのものではない場合
+          - accountRegistUpdateForm.ownerId には登録アカウントテーブルで「編集」を押下した際の accounts_row.ownerId の値を充当する
+    - 関連変数
+      - accountRegistUpdateForm.ownerId（int 型）
+      - accountRegistUpdateForm.userName（String 型）
+  - 【exises-03-02-02】ログイン ID（email アドレス）入力欄
+    - 特徴・機能
+      - 登録するアカウントのログイン ID（email アドレス）を入力できる
+      - 「ログイン ID（email アドレス）」のラベルを入力欄に設定する
+      - メールアドレス形式の必要あり。半角英数字と一部特殊記号の入力が可能
+      - 長さは 100 文字以内
+      - 「accountRegistUpdateForm.isOwnAccount」が false の場合は非活性
+    - 関連変数
+      - accountRegistUpdateForm.loginId（String 型）
+  - 【exises-03-02-03】次のいずれかのボタン
+    - 【exises-03-02-03-01】パスワード入力エリアを表示
+      - 特徴・機能
+        - 押下すると次の変化が起きる
+          - パスワード入力欄(1)とパスワード入力欄(2)が表示される
+            - いずれも空白の状態で表示される
+          - ボタンの表示が「パスワードは更新しない」に切り替わる
+            - 変数「accountRegistUpdateForm.isEditPassword」を true にする
+        - 「accountRegistUpdateForm.isOwnAccount」が false の場合は非表示
+      - 関連変数
+        - accountRegistUpdateForm.isEditPassword（boolean 型。初期状態は false）
+      - 【exises-03-02-03-01-01】パスワード入力欄(1)
+        - 特徴・機能
+          - 登録するアカウントのパスワードを入力できる
+          - 「パスワード（半角英数字 8 文字以上 16 文字以内）」のラベルを入力欄に設定する
+          - 長さは半角英数字 8 文字以上 16 字以内
+          - 「accountRegistUpdateForm.isOwnAccount」が false の場合は非活性
+        - 関連変数
+          - accountRegistUpdateForm.password1（String 型）
+      - 【exises-03-02-03-01-02】パスワード入力欄(2)
+        - 特徴・機能
+          - 登録するアカウントのパスワードを入力できる
+          - 「パスワード（半角英数字 8 文字以上 16 文字以内）」のラベルを入力欄に設定する
+          - パスワード入力欄(1)の入力内容と合致している必要がある
+          - 「accountRegistUpdateForm.isOwnAccount」が false の場合は非活性
+        - 関連変数
+          - accountRegistUpdateForm.password2（String 型）
+    - 【exises-03-02-03-02】パスワードは更新しない
+      - 特徴・機能
+        - 押下すると次の変化が起きる
+          - パスワード入力欄(1)とパスワード入力欄(2)が非表示になる
+            - 変数「accountRegistUpdateForm.password1」と「accountRegistUpdateForm.password2」が空白になる
+          - ボタンの表示が「パスワード入力エリアを表示」に切り替わる
+            - 変数「accountRegistUpdateForm.isEditPassword」を false にする
+          - 「accountRegistUpdateForm.isOwnAccount」が false の場合は非活性
+        - 関連変数
+          - accountRegistUpdateForm.isEditPassword
+  - 【exises-03-02-04】ユーザーコメント入力欄
+    - 特徴・機能
+      - 登録アカウントのユーザーが任意に設定できるコメントを入力できる
+      - 入力は任意
+      - 「コメント」のラベルを入力欄に設定する
+      - 長さは半角全角両方可能で 100 文字以内
+      - 左の文字で登録されていたエスケープ文字は右の文字に戻る
+        - ["&#39;","(半角シングルクォーテーション)"]
+        - ["&quot;","(半角ダブルクォーテーション)"]
+        - ["&com;","(半角カンマ)"]
+        - ["&amp;","(半角アンパサンド)"]
+        - ["&lt;","(半角小なり)"]
+        - ["&gt;","(半角大なり)"]
+        - ["&nbsp;","(半角スペース)"]
+        - ["&yen;","(半角円マーク)"]
+        - ["&copy;","(コピーライト)"]
+      - 「accountRegistUpdateForm.isOwnAccount」が false の場合は非活性
+    - 関連変数
+      - accountRegistUpdateForm.comment（String 型）
+  - 【exises-03-02-05】ユーザー権限プルダウン
+    - 特徴・機能
+      - 対象ユーザーの権限を選択肢の中から設定する
+    - 【exises-03-02-05-01】["一般","講師"]
+      - 特徴・機能
+        - この選択肢の中から選んで押下することで権限を設定できる
+        - 初期状態は[ulinker_accounts.is_teacher]の値を反映した accountRegistUpdateForm.authType の値によって決まる
+          - [ulinker_accounts.is_teacher]の値が 0 の場合は「一般」
+          - [ulinker_accounts.is_teacher]の値が 1 の場合は「講師」
+        - ログインユーザーのアカウントに応じた非活性設定
+          - isMaster が 0、isTeacher が 0
+            - 自分のアカウントのみ編集可能
+              - 自分のアカウントの講師権限は編集できないので非活性
+          - isMaster が 0、isTeacher が 1
+            - 自分のアカウントを編集する場合
+              - 自分のアカウントの講師権限は編集できないので非活性
+            - 自分のアカウントではない、isMaster が 0 のアカウントを編集する
+              - 講師権限の編集が可能なため非活性ではない
+            - 自分のアカウントではない、isMaster が 1 のアカウントを編集する
+              - isMaster が 1 のアカウントの講師権限は「講師」で固定なので非活性
+          - isMaster が 1（おのずと isTeacher は 1）
+            - 自分のアカウントを編集する場合
+              - 自分のアカウントの講師権限は編集できないので非活性
+            - 自分以外のアカウントを編集する場合
+              - 講師権限の編集が可能なため非活性ではない
+      - 関連変数
+        - accountRegistUpdateForm.authType（String 型）
+        - loginUser.isTeacher（int 型）
+  - 【exises-03-02-06】更新ボタン
+    - 特徴・機能
+      - [ulinker_accounts.is_teacher]が 0 且つ変数「accountRegistUpdateForm.isOwnAccount」が false の場合は非表示
+      - 変数「accountRegistUpdateForm.isUpdateMode」が true の場合に更新ボタンになる
+      - 初期状態は非活性
+        - ユーザーコメント入力欄以外の入力欄がすべて入力済みの状態になると活性化する
+          - ユーザーコメント入力欄が空白状態となっても、非活性にはならない
+      - バリデーションを実施した上で、入力内容を API に送り、レスポンスを受け取る
+        - バリデーションでは以下の判定を行う
+          - ユーザー名に不適切な文字（半角の特殊な記号）が含まれている
+          - ログイン ID がメールアドレスの形式ではない
+          - ログイン ID に（全角文字などの）不適切な文字が含まれている
+          - パスワード(1)が半角英数字 8 文字以上 16 文字以内の形式ではない
+          - パスワード(1)とパスワード(2)が合致していない
+        - 変数「accountRegistUpdateForm.comment」は、以下の右の文字が左のエスケープ文字に変換された状態になる
+          - ["&#39;","(半角シングルクォーテーション)"]
+          - ["&quot;","(半角ダブルクォーテーション)"]
+          - ["&com;","(半角カンマ)"]
+          - ["&amp;","(半角アンパサンド)"]
+          - ["&lt;","(半角小なり)"]
+          - ["&gt;","(半角大なり)"]
+          - ["&nbsp;","(半角スペース)"]
+          - ["&yen;","(半角円マーク)"]
+          - ["&copy;","(コピーライト)"]
+        - ユーザー情報登録更新確認モーダルを表示する。以下はこのモーダルで「はい」を選択した場合
+          - ユーザー情報の登録・更新処理のための非同期通信が実行される
+          - 非同期通信後はレスポンスが返却されるので、結果のメッセージをユーザー情報登録更新完了モーダルに表示する
+            - 登録・更新処理に登録に失敗した場合はそのメッセージを表示する
+            - 登録・更新処理に成功した場合は、完了した旨のメッセージを表示する
+          - 登録・更新処理に成功した場合、3 秒後にブラウザがリロードされる
+        - サーバー側 API に送信するオブジェクト変数「param」には、次の内容を格納する
+          - 『type: "update"』
+          - 『userId: accountRegistUpdateForm.ownerId』
+          - 『userName: accountRegistUpdateForm.userName』
+          - 『email: accountRegistUpdateForm.loginId』
+          - 『password: accountRegistUpdateForm.password1』
+          - 『isTeacher: accountRegistUpdateForm.isTeacher』
+          - 『isOwner: accountRegistUpdateForm.isOwner（変更不可）』
+          - 『comment: accountRegistUpdateForm.comment』
+          - 『updatedUserId: {ログイン中ユーザーの ownerId}』
+          - 『token: {ランダムな半角英数字 16 文字}』
+        - 更新したアカウントが自分のものか他者のものかで、完了後の処理を分ける
+          - 他者のものである場合は、3 秒後に画面をリロードする
+          - 自分のものである場合は、一旦ログアウトする
+    - 関連変数
+      - accountRegistUpdateForm（Object 型）
+      - dialog.isUserRegistUpdateConfirmOpen（boolean 型。初期状態は false）
+      - dialog.isUserRegistUpdateCompleteOpen（boolean 型。初期状態は false）
+  - 【exises-03-02-07】リセットボタン
+    - 特徴・機能
+      - フォーム内のすべての入力欄を空白状態に戻す
+        - つまり accountRegistUpdateForm のすべてのプロパティが空文字状態となる
+    - 関連変数
+      - 設定なし

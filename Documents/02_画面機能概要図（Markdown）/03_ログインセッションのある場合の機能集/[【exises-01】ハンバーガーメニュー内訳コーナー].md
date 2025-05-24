@@ -1,0 +1,80 @@
+# [【exises-01】ハンバーガーメニュー内訳コーナー]
+
+- 【exises-01】機能説明
+  - 特徴・機能
+    - ハンバーガーメニューアイコンボタンを押下すると、このボタンの下にリンクメニューが載ったコーナーが表示される
+      - コーナーは次の場合に非表示に戻る
+        - ハンバーガーメニューアイコンボタンを再度押下する
+        - コーナーの外をクリックする
+        - リンクメニューのうちのどれかを押下する
+  - 関連機能
+    - [【common-03】検索フォーム]
+    - [【exises-14】お気に入りサイトリスト]
+    - [【exises-04】ログインユーザー登録ノート一覧エリア]
+    - [【exises-06】ログインユーザー登録ビデオ一覧エリア]
+    - [【exises-08】アーカイブノート CSV タイトルテーブル]
+    - [【exises-11】アーカイブビデオ CSV タイトルテーブル]
+    - [【exises-02】ユーザー一覧エリア]
+    - [【exises-03】ユーザー新規登録 or ユーザー情報更新フォーム]
+    - [【exises-15】停止アカウント・ユーザー登録データ削除テーブル]
+  - 関連変数
+    - flag.isHbDialogOpen（boolean 型。初期状態は false）
+- 【exises-01-01】検索モードに切り替える
+  - 特徴・機能
+    - このリンクを押下すると、コーナーが非表示に戻り、代わりに[【common-03】検索フォーム]が表示される
+  - 関連変数
+    - flag.isSearchFormOpen（boolean 型。初期状態は false）
+    - flag.isHbDialogOpen
+- 【exises-01-02】お気に入りサイトリストを表示する
+  - 特徴・機能
+    - このリンクを押下すると、コーナーが非表示に戻り、代わりに[【exises-14】お気に入りサイトリスト]が表示される
+  - 関連変数
+    - flag.isBookmarkSitesView（boolean 型。初期状態は false）
+    - flag.isHbDialogOpen
+- 【exises-01-03】別タブで「cURL About」を開く
+  - 特徴・機能
+    - このリンクを押下すると、コーナーが非表示に戻り、別タブで「cURL About」が表示される
+      - サイト URL は<https://empower-util.sakura.ne.jp/documents/cURL-About/index.php>
+  - 関連変数
+    - flag.isHbDialogOpen
+- 【exises-01-04】ノート登録編集モードに切り替える
+  - 特徴・機能
+    - このリンクを押下すると、コーナーが非表示に戻り、代わりに[【exises-04】ログインユーザー登録ノート一覧エリア]が表示される
+  - 関連変数
+    - flag.isUsersNotesTableView（boolean 型。初期状態は false）
+    - flag.isHbDialogOpen
+- 【exises-01-05】ビデオ登録編集モードに切り替える
+  - 特徴・機能
+    - このリンクを押下すると、コーナーが非表示に戻り、代わりに[【exises-06】ログインユーザー登録ビデオ一覧エリア]が表示される
+  - 関連変数
+    - flag.isUsersVideosTableView（boolean 型。初期状態は false）
+    - flag.isHbDialogOpen
+- 【exises-01-06】アーカイブノート一覧モードに切り替える
+  - 特徴・機能
+    - このリンクを押下すると、コーナーが非表示に戻り、代わりに[【exises-08】アーカイブノート CSV タイトルテーブル]が表示される
+  - 関連変数
+    - flag.isUsersNotesCsvTableView（boolean 型。初期状態は false）
+    - flag.isHbDialogOpen
+- 【exises-01-07】アーカイブビデオ一覧モードに切り替える
+  - 特徴・機能
+    - このリンクを押下すると、コーナーが非表示に戻り、代わりに[【exises-11】アーカイブビデオ CSV タイトルテーブル]が表示される
+  - 関連変数
+    - flag.isUsersVideosCsvTableView（boolean 型。初期状態は false）
+    - flag.isHbDialogOpen
+- 【exises-01-08】ユーザー登録編集モードに切り替える
+  - 特徴・機能
+    - このリンクを押下すると、コーナーが非表示に戻り、代わりに[【exises-03】ユーザー新規登録 or ユーザー情報更新フォーム]が表示される
+    - ログインユーザーの講師権限が 1 以上の場合は、[【exises-02】ユーザー一覧エリア]も併せて表示される
+      - 表示位置は[【exises-03】ユーザー新規登録 or ユーザー情報更新フォーム]の上
+  - 関連変数
+    - flag.isAccountRegistUpdateFormOpen（boolean 型。初期状態は false）
+    - flag.isAccountsTableView（boolean 型。初期状態は false）
+    - flag.isHbDialogOpen
+- 【exises-01-09】停止アカウント・ユーザー登録データ削除モードに切り替える
+  - 特徴・機能
+    - このリンクを押下すると、コーナーが非表示に戻り、代わりに[【exises-15】停止アカウント・ユーザー登録データ削除テーブル]が表示される
+    - 変数「loginUser.isMaster」が 1 である場合にこのリンクが表示される
+  - 関連変数
+    - isDangerZoneFormOpen（boolean 型。初期状態は false）
+    - loginUser.isMaster（int 型）
+    - flag.isHbDialogOpen

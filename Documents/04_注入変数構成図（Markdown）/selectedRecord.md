@@ -1,0 +1,139 @@
+# [Vue の Data に外部から注入する変数「selectedRecord」]オブジェクト構成
+
+- オブジェクトパラメータ
+  - note
+    - 概要
+      - ノートに関する検索後取得結果を格納しているオブジェクト
+    - contentsId
+      - 概要
+        - 取得したノートの「contents_id」を格納する
+      - 初期値
+        - 0
+    - title
+      - 概要
+        - 取得したノートの「title」を格納する
+      - 初期値
+        - 空文字（ダブルクォーテーションのみ）
+    - url
+      - 概要
+        - 取得したノートの「url」を格納する
+      - 初期値
+        - NULL
+    - csvFileName
+      - 概要
+        - 取得したノートがアーカイブ CSV ファイルからの取得だった場合、そのファイル名を拡張子付きで格納する
+      - 初期値
+        - NULL
+    - urlSub
+      - 概要
+        - 取得したノートの「url_sub」を格納する
+      - 初期値
+        - NULL
+    - createdUserId
+      - 概要
+        - 取得したノートの「owner_id」に紐づくアカウントを[ulinker_accounts]で検索して取得した「owner_id」を格納する
+      - 初期値
+        - 0
+    - createdUserName
+      - 概要
+        - 取得したノートの「owner_id」に紐づくアカウントを[ulinker_accounts]で検索して取得した「name」を格納する
+      - 初期値
+        - 空文字（ダブルクォーテーションのみ）
+    - created
+      - 概要
+        - 取得したノートの「created_at」を yyyy-mm-dd 形式に変換して格納する
+      - 初期値
+        - NULL
+    - lastUpdated
+      - 概要
+        - 取得したノートの「updated_at」を yyyy-mm-dd 形式に変換して格納する
+      - 初期値
+        - NULL
+    - textViewMode
+      - 概要
+        - 取得したノートの本文をどのモードで閲覧するかの設定を格納する
+          - 0 の場合は「全文表示モード」
+          - 1 の場合は「ブラインドスタートモード」
+          - 2 の場合は「行読み上げモード」
+          - 3 の場合は「範囲選択・加工モード」
+      - 初期値
+        - 0
+    - text
+      - 概要
+        - 取得したノートの「note」を格納する
+      - 初期値
+        - 空文字（ダブルクォーテーションのみ）
+    - textList
+      - 概要
+        - text を改行コードで分割した各要素を、プロパティ「class」を添えてオブジェクト化した状態で格納する
+      - 初期値
+        - NULL
+    - rebuildText
+      - 概要
+        - 「加工ノート作成入力ボックス」に反映される、selectedTextRows の内容に基づくテキスト
+      - 初期値
+        - 空文字（ダブルクォーテーションのみ）
+    - selectedTextRows
+      - 概要
+        - 「選択範囲で加工ノートを作成」ボタン押下時に、textList のうちで指定された行要素を格納したもの
+        - これを改行コードで連結させたものが rebuildText になる
+      - 初期値
+        - 空文字（ダブルクォーテーションのみ）
+    - relateNotesAndWords
+      - 概要
+        - [linker_notes.relate_notes]から取得した、contents_id,title,common_word で構成される JSON 形式のオブジェクトリスト
+      - 初期値
+        - NULL
+    - relateVideosArray
+      - 概要
+        - [linker_notes.relate_videos]から取得して改行コードで区切り配列化した、ノートに関連する動画 URL のリスト
+      - 初期値
+        - NULL
+  - video
+    - 概要
+      - ビデオ（動画）に関する検索後取得結果を格納しているオブジェクト
+    - contentsId
+      - 概要
+        - 取得したビデオの「contents_id」を格納する
+      - 初期値
+        - 0
+    - title
+      - 概要
+        - 取得したビデオの「title」を格納する
+      - 初期値
+        - 空文字（ダブルクォーテーションのみ）
+    - url
+      - 概要
+        - 取得したビデオの「url」を格納する
+      - 初期値
+        - 空文字（ダブルクォーテーションのみ）
+    - csvFileName
+      - 概要
+        - 取得したノートがアーカイブ CSV ファイルからの取得だった場合、そのファイル名を拡張子付きで格納する
+      - 初期値
+        - NULL
+    - tags
+      - 概要
+        - 取得したビデオの「tags」を格納する
+      - 初期値
+        - NULL
+    - createdUserId
+      - 概要
+        - 取得したビデオの「owner_id」に紐づくアカウントを[ulinker_accounts]で検索して取得した「owner_id」を格納する
+      - 初期値
+        - 0
+    - createdUserName
+      - 概要
+        - 取得したビデオの「owner_id」に紐づくアカウントを[ulinker_accounts]で検索して取得した「name」を格納する
+      - 初期値
+        - 空文字（ダブルクォーテーションのみ）
+    - created
+      - 概要
+        - 取得したビデオの「created_at」を yyyy-mm-dd 形式に変換して格納する
+      - 初期値
+        - NULL
+    - lastUpdated
+      - 概要
+        - 取得したビデオの「updated_at」を yyyy-mm-dd 形式に変換して格納する
+      - 初期値
+        - NULL
