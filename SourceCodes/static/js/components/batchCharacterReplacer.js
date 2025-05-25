@@ -19,7 +19,7 @@ let BatchCharacterReplacer = Vue.component("batch-character-replacer", {
             class="white--text"
             @click="openIsConvertStringConfirm"
             data-parts-id="exises-05-13-03"
-            :disabled="isBatchReplaceDisabled"
+            :disabled="replaceFrom == ''"
           >対象文字を一括置換する</v-btn>
         </v-col>
       </v-row>
@@ -71,15 +71,12 @@ let BatchCharacterReplacer = Vue.component("batch-character-replacer", {
       },
     }
   },
-  computed: {
-    isBatchReplaceDisabled() {
-      return (this.replaceFrom == '' || this.replaceTo == '');
-    },
-  },
   methods: {
     openIsConvertStringConfirm() {
-      if (this.replaceFrom == '' || this.replaceTo == '') return;
-      this.confirmDialog.message = `「${this.replaceFrom}」を「${this.replaceTo}」に一括置換してもよろしいですか？`;
+      if (this.replaceFrom == '') return;
+      const textReplaceFor = `「${this.replaceFrom}」を「${this.replaceTo}」に一括置換してもよろしいですか？`;
+      const textRemove = `「${this.replaceFrom}」を一括除去してもよろしいですか？`;
+      this.confirmDialog.message = (this.replaceTo == '') ? textRemove : textReplaceFor;
       this.dialog.isConvertStringConfirmOpen = true;
     },
     submitConfirmed() {
@@ -99,9 +96,7 @@ let BatchCharacterReplacer = Vue.component("batch-character-replacer", {
     },
     handleCompleteDialogClose() {
       this.dialog.isConvertStringCompleteOpen = false;
-      
-      // 整形完了を示す 'formatting-complete' イベントを親コンポーネントに発行
-      this.$emit('formatting-complete');
+      this.$emit('formatting-complete'); // 整形完了を示す 'formatting-complete' イベントを親コンポーネントに発行
     }
   },
 });
