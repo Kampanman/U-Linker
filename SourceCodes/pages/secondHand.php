@@ -16,8 +16,13 @@
 <body style="background-color: #B2DFDB;">
   <div id="app">
     <header data-parts-id="secondhand-01">
-      <div class="header-center">
-        <a href="#" data-parts-id="secondhand-01-01" class="title-logo"><?php echo BUNNER; ?></a>
+      <div class="header-center" align="center">
+        <div class="d-block">
+          <a href="#" data-parts-id="secondhand-01-01" class="title-logo"><?php echo BUNNER; ?></a>
+        </div>
+        <div class="d-block">
+          <small class="white--text">Supported(Created) by "Gemini Code-Assist".</small>
+        </div>
       </div>
     </header><br />
     <main>

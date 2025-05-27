@@ -7,11 +7,13 @@ let archivedNoteListTable = Vue.component("archived-note-list-table", {
         <v-card-title>
           アーカイブノートタイトル一覧 ({{ csvFileName }})
           <v-spacer></v-spacer>
-          <v-text-field
+          <v-text-field dense
             v-model="search"
             append-icon="mdi-magnify"
             label="タイトル検索"
-            single-line hide-details dense class="search-field"
+            single-line
+            hide-details
+            class="search-field"
           ></v-text-field>
         </v-card-title>
         <v-divider></v-divider>
@@ -20,6 +22,8 @@ let archivedNoteListTable = Vue.component("archived-note-list-table", {
           :items="items"
           :search="search"
           item-key="contentsId"
+          :footer-props="{'items-per-page-options': [10, 20, 50, 100]}"
+          :items-per-page.sync="itemsPerPage"
           class="elevation-1 dense-table"
           no-data-text="ログインユーザーが登録したノートデータが存在しません。"
         >
@@ -66,6 +70,7 @@ let archivedNoteListTable = Vue.component("archived-note-list-table", {
         { text: '編集', value: 'actions', sortable: false, align: 'center', width: '100px' },
       ],
       search: "",
+      itemsPerPage: 10,
     };
   },
   methods: {

@@ -325,9 +325,19 @@ let searchForm = Vue.component("search-form", {
       this.showPerplexityButton = false;
       if (!this.searchForm.keyword) this.errorMessage.push('検索ワードが入力されていません');
 
-      const hasNotes = this.dbTableRecords.dbFiles.some(file => file.checked && file.file_name.includes('ulinker_notes'));
-      const hasVideos = this.dbTableRecords.dbFiles.some(file => file.checked && file.file_name.includes('ulinker_videos'));
-      if (!hasNotes || !hasVideos) this.errorMessage.push('検索対象のテーブルまたはCSVが十分に選択されていません');
+      // 選択されたDB/CSVファイルのチェック
+      const selectedFiles = this.dbTableRecords.dbFiles.filter(file => file.checked);
+      const selectedNotesCount = selectedFiles.filter(file => file.file_name.includes('ulinker_notes')).length;
+      const selectedVideosCount = selectedFiles.filter(file => file.file_name.includes('ulinker_videos')).length;
+
+      if (selectedNotesCount === 0 || selectedVideosCount === 0) {
+        this.errorMessage.push('検索対象のテーブルまたはCSVが十分に選択されていません');
+      } else {
+        if (selectedNotesCount > 4 || selectedVideosCount > 4) {
+          this.errorMessage.push('ulinker_notesとulinker_videosはそれぞれ4つ以内の選択としてください');
+        }
+      }
+      
       if (this.errorMessage.length > 0) {
         this.showErrorMessage();
         return;

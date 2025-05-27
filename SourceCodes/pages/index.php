@@ -37,22 +37,33 @@
           @open-account-delete="openAccountDelete"
         ></hamburger-menu>
       </div>
-      <div class="header-center">
-        <a href="#" data-parts-id="common-01" class="title-logo" @click="openTitleLogo"><?php echo BUNNER; ?></a>
+      <div class="header-center" align="center">
+        <div class="d-block">
+          <a href="#" data-parts-id="common-01" class="title-logo" @click="openTitleLogo"><?php echo BUNNER; ?></a>
+        </div>
+        <div class="d-block">
+          <small class="white--text">Supported(Created) by "Gemini Code-Assist".</small>
+        </div>
       </div>
       <div class="header-right">
-        <button v-if="sessionString === '' && isLoginButtonVisible" data-parts-id="common-01-nonses-01" @click="openLoginForm" title="ログインフォームを開きます">
-          <!-- ログインアイコン -->
-          <v-icon color="white" class="">mdi-login</v-icon>
-        </button>
-        <button v-if="sessionString === '' && isSearchButtonVisible" data-parts-id="common-01-nonses-02" @click="openSearchForm" title="検索フォームを開きます">
-          <!-- 検索アイコン -->
-          <v-icon color="white" class="">mdi-magnify</v-icon>
-        </button>
-        <button v-if="sessionString !== ''" data-parts-id="common-01-exises-02" @click="openLogoutConfirm" title="ログアウトモーダルを開きます">
-          <!-- ログアウトアイコン -->
-          <v-icon color="white" class="">mdi-logout</v-icon>
-        </button>
+        <button data-parts-id="common-01-nonses-01"
+          :disabled="!isReady"
+          v-if="sessionString === '' && isLoginButtonVisible"
+          @click="openLoginForm"
+          title="ログインフォームを開きます"
+        ><v-icon color="white" class="">mdi-login</v-icon></button>
+        <button data-parts-id="common-01-nonses-02"
+          :disabled="!isReady"
+          v-if="sessionString === '' && isSearchButtonVisible"
+          @click="openSearchForm"
+          title="検索フォームを開きます"
+        ><v-icon color="white" class="">mdi-magnify</v-icon></button>
+        <button data-parts-id="common-01-exises-02"
+          :disabled="!isReady"
+          v-if="sessionString !== ''"
+          @click="openLogoutConfirm"
+          title="ログアウトモーダルを開きます"
+        ><v-icon color="white" class="">mdi-logout</v-icon></button>
       </div>
     </header>
     <br />
@@ -200,7 +211,6 @@
         </v-app>
       </div>
 
-      <!-- ログアウト確認モーダル -->
       <logout-modals
         :dialog="dialog" :login-user="loginUser" :path="axiosPath" :functions="functions"
         @update:close-confirm="dialog.isLogoutConfirmOpen = false"
@@ -290,6 +300,7 @@
           video: 0,
           bookmark: 0,
         },
+        isReady: false,
       },
       computed: {
         isMaster() {
@@ -308,6 +319,7 @@
           this.initial.loginUser = JSON.parse(JSON.stringify(this.loginUser)); // loginUserの初期値も更新しておく
         }
         this.openTitleLogo();
+        this.isReady = true;
       },
       methods: {
         handleCsvList(payload) {
@@ -372,16 +384,14 @@
         toggleHamburgerMenu() {
           if (this.$refs.hamburgerMenuRef) this.$refs.hamburgerMenuRef.toggleMenu();
         },
-        // リセット処理
-        resetFlag() {
+        resetFlag() { // リセット処理
           Object.assign(this.flag, this.initial.flag);
           this.isDeleteStoppedAccountsOpen = false;
         },
         resetDialog() {
           Object.assign(this.dialog, this.initial.dialog);
         },
-        // ログアウト処理
-        doLogout() {
+        doLogout() { // ログアウト処理
           const data = {
             type: "logout",
             ownerId: this.loginUser.ownerId,

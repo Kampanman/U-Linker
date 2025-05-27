@@ -86,7 +86,6 @@ header {
   background-color: #efebde;
 }
 
-.header-center,
 .header-left,
 .header-right {
   display: flex;
@@ -380,7 +379,8 @@ textarea {
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
-  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.3s ease-in-out; /* 初期位置を少し下げる */
+  /* 初期位置を少し下げる */
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
 .return-top-button-container.visible {
@@ -408,7 +408,8 @@ textarea {
 }
 
 .return-top-button-container svg {
-  width: 60%; /* ボタンサイズに対する矢印の相対的な大きさ */
+  /* ボタンサイズに対する矢印の相対的な大きさ */
+  width: 60%;
   height: 60%;
   fill: var(--button-arrow-color); /* 矢印の色は枠線と同じ */
 }
@@ -471,6 +472,10 @@ textarea {
 
   .sm-font {
     font-size: small !important;
+  }
+
+  small.white--text {
+    font-size: 10px
   }
 }
 

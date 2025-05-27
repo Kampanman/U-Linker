@@ -20,11 +20,15 @@ let archivedVideoListTable = Vue.component("archived-video-list-table", {
           :items="items"
           :search="search"
           item-key="contentsId"
+          :footer-props="{'items-per-page-options': [10, 20, 50, 100]}"
+          :items-per-page.sync="itemsPerPage"
           class="elevation-1 dense-table"
           no-data-text="ログインユーザーが登録したビデオデータが存在しません。"
         >
           <template v-slot:item.title="{ item }">
-            <span :data-parts-id="'exises-12-01-01'" :data-contents-id="item.contentsId" v-text="item.title"></span>
+            <span :data-parts-id="'exises-12-01-01'"
+              :data-contents-id="item.contentsId"
+              v-text="item.title"></span>
           </template>
           <template v-slot:item.created="{ item }">
             <span :data-parts-id="'exises-12-01-02'" v-text="item.created"></span>
@@ -66,6 +70,7 @@ let archivedVideoListTable = Vue.component("archived-video-list-table", {
         { text: '編集', value: 'actions', sortable: false, align: 'center', width: '100px' },
       ],
       search: "",
+      itemsPerPage: 10,
     };
   },
   methods: {
