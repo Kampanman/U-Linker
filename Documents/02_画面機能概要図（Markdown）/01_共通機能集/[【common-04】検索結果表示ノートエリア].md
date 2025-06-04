@@ -144,6 +144,11 @@
     - 関連変数
       - selectedRecord.note.lastUpdated（datetime 型）
       - selectedRecord.note.created（datetime 型）
+  - (Ver1.1 追加分)【common-04-02-07】キーワード含有行数
+    - 特徴・機能
+      - 「表示」を押下して選択したノートで、検索ワードを含み青色にハイライトされている行がある場合、その数を表示する
+    - 関連変数
+      - containWordRows（int型）
   - 【common-04-02-04】モードプルダウン
     - 特徴・機能
       - プルダウンの選択内容により、選択したノートの本文をどう表示するかを判別する

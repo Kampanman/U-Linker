@@ -68,10 +68,9 @@ let selectedNoteText = Vue.component("selected-note-text", {
       <div v-if="selectedNote && selectedNote.textViewMode === 2" class="mb-3" data-parts-id="common-04-02-05-03">
         <v-row justify="center" class="mb-3">
           <v-col cols="auto">
-            <v-btn
+            <v-btn data-parts-id="common-04-02-05-03-01"
               v-if="!isDownloaded"
               @click="downloadNote(2)"
-              data-parts-id="common-04-02-05-03-01"
               color="#8d0000" class="white--text"
             >ノートをダウンロード</v-btn>
           </v-col>
@@ -79,10 +78,9 @@ let selectedNoteText = Vue.component("selected-note-text", {
         <div data-parts-id="common-04-02-05-03-02" class="note-body-area">
           <hr class="my-5" />
           <div v-for="(line, index) in selectedNote.textList" :key="index" class="speech-line d-flex align-start">
-            <v-btn
+            <v-btn data-parts-id="common-04-02-05-03-02-01"
               v-if="line.text && line.text.trim() !== ''"
               icon small @click="speakText(line.text, index)"
-              data-parts-id="common-04-02-05-03-02-01"
               class="mr-2" :disabled="isSpeaking"
             ><v-icon>mdi-volume-high</v-icon></v-btn>
             <p data-parts-id="common-04-02-05-03-02-02"
@@ -198,6 +196,7 @@ let selectedNoteText = Vue.component("selected-note-text", {
       rebuildText: '', // 加工後ノート本文
       isSpeaking: false, // 音声再生中フラグ
       currentlySpeakingIndex: -1, // 現在読み上げ中の行インデックス
+      containWordRows: 0, // 'bluetext' の行数を格納する
     };
   },
   computed: {
@@ -268,9 +267,9 @@ let selectedNoteText = Vue.component("selected-note-text", {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'ja-JP'; // 言語を日本語に設定
         utterance.rate = window.innerWidth < 500 ? 1.2 : 1.75; // 再生速度の設定。1.0倍が標準。画面サイズに応じて速度を変える
-
         this.currentlySpeakingIndex = index; // 再生中の行インデックスを設定
         this.isSpeaking = true; // 再生開始前にフラグを立てる
+        
         // 再生終了時/エラー時に状態をリセット
         utterance.onend = () => { this.isSpeaking = false; this.currentlySpeakingIndex = -1; };
         utterance.onerror = () => { this.isSpeaking = false; this.currentlySpeakingIndex = -1; console.error("Speech synthesis error"); };
@@ -365,7 +364,7 @@ let selectedNoteText = Vue.component("selected-note-text", {
       // 選択範囲のみを置換
       this.rebuildText = this.rebuildText.substring(0, start) + transformedText + this.rebuildText.substring(end);
 
-      // 選択範囲を更新後のテキストに合わせる (任意)
+      // 選択範囲を更新後のテキストに合わせる
       this.$nextTick(() => {
         textarea.focus();
         textarea.setSelectionRange(start, start + transformedText.length);
@@ -474,11 +473,27 @@ let selectedNoteText = Vue.component("selected-note-text", {
         if (newVal?.contentsId !== oldVal?.contentsId || newVal?.textViewMode !== oldVal?.textViewMode) {
           this.resetComponentState();
         }
+        // processedTextList が再計算されるたびに containWordRows を更新し、イベントを発行
+        if (newVal && newVal.textList) {
+          let blueTextCount = 0;
+          this.processedTextList.forEach(line => {
+            if (line.class === 'bluetext') blueTextCount++;
+          });
+          this.containWordRows = blueTextCount;
+        }
       },
       deep: true,
       immediate: true
     },
+    containWordRows(newVal) {
+      this.$emit('update-contain-word-rows', newVal);
+    },
   },
+});
+Vue.nextTick(() => { // DOM更新後に実行されるようにする
+  if (this && this.watch && this.selectedNote) { // thisとwatchとselectedNoteが存在するか確認
+    this.watch.selectedNote.handler(this.selectedNote, null); // 初期ロード時にも containWordRows を計算・emit するため
+  }
 });
 
 export default selectedNoteText;

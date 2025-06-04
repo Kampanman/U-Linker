@@ -49,6 +49,11 @@ let selectedNote = Vue.component("selected-note", {
         {{ selectedNote.lastUpdated.split(' ')[0] }}（ 登録日: {{ selectedNote.created.split(' ')[0] }} ）
       </div>
 
+      <div class="mt-5 mb-5" data-parts-id="common-04-02-07" align="center" v-if="containWordRows>0">
+        <span class="mr-2">キーワード含有行数: </span>
+        <span class="bluetext bold">{{ containWordRows }}</span>
+      </div>
+
       <v-col cols="12" sm="4" class="ml-4 mb-3" data-parts-id="common-04-02-04">
         <v-select
           v-model="selectedNote.textViewMode"
@@ -69,6 +74,7 @@ let selectedNote = Vue.component("selected-note", {
         :functions="functions"
         :path="path"
         :login-user="loginUser"
+        @update-contain-word-rows="handleContainWordRows"
       ></selected-note-text>
 
       <div data-parts-id="common-04-02-06" v-if="isCurrentUserNoteOwner">
@@ -138,6 +144,7 @@ let selectedNote = Vue.component("selected-note", {
         { value: 3, text: "範囲選択・加工モード" }
       ],
       currentlyDisplayedVideoIndex: -1, // 現在表示中の関連動画のインデックス (-1 は何も表示していない状態)
+      containWordRows: 0,
     };
   },
   computed: {
@@ -181,6 +188,9 @@ let selectedNote = Vue.component("selected-note", {
     }
   },
   methods: {
+    handleContainWordRows(payload) {
+      this.containWordRows = payload;
+    },
     // YouTube URLを埋め込みURLに変換
     generateEmbedUrl(url) {
       if (!url) return null;
