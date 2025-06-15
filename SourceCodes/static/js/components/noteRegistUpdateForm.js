@@ -117,7 +117,8 @@ let noteRegistUpdateForm = Vue.component("note-regist-update-form", {
                       :items="searchForm.relateNotesTableData"
                       item-key="contentsId" dense
                       class="elevation-1 dense-table"
-                      :items-per-page="10"
+                      :footer-props="{'items-per-page-options': [10, 20, 50, 100]}"
+                      :items-per-page.sync="itemsPerPage"
                     >
                       <template v-slot:item.select="{ item }">
                         <v-checkbox data-parts-id="exises-05-05-01-01"
@@ -129,8 +130,7 @@ let noteRegistUpdateForm = Vue.component("note-regist-update-form", {
                         ></v-checkbox>
                       </template>
                       <template v-slot:item.title="{ item }">
-                        <span
-                          data-parts-id="exises-05-05-01-02"
+                        <span data-parts-id="exises-05-05-01-02"
                           :data-contents-id="item.contentsId"
                           class="py-3 d-block">{{ item.title }}</span>
                       </template>
@@ -140,8 +140,7 @@ let noteRegistUpdateForm = Vue.component("note-regist-update-form", {
                           maxlength="50"
                           counter="50"
                           label="共通ワード"
-                          hide-details
-                          class="ma-0 pa-0 py-3"
+                          hide-details class="ma-0 pa-0 py-3"
                           :disabled="isCommonWordInputDisabled(item)"
                         ></v-text-field>
                       </template>
@@ -440,6 +439,7 @@ let noteRegistUpdateForm = Vue.component("note-regist-update-form", {
       },
       showCopySuccess: false,
       defaultUpdateForm: null, // 更新モード時の初期データ保持用
+      itemsPerPage: 10,
     };
   },
   computed: {

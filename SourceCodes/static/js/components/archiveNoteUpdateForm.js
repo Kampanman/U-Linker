@@ -113,9 +113,9 @@ let archiveNoteUpdateForm = Vue.component("archive-note-update-form", {
                       :items="searchForm.relateNotesTableData"
                       item-key="contentsId"
                       data-parts-id="exises-05-05-01"
-                      class="elevation-1 dense-table"
-                      dense
-                      :items-per-page="10"
+                      class="elevation-1 dense-table" dense
+                      :footer-props="{'items-per-page-options': [10, 20, 50, 100]}"
+                      :items-per-page.sync="itemsPerPage"
                     >
                       <template v-slot:item.select="{ item }">
                         <v-checkbox
@@ -371,6 +371,7 @@ let archiveNoteUpdateForm = Vue.component("archive-note-update-form", {
       },
       showCopySuccess: false,
       lastSelection: null, // テキストエリアの選択範囲記憶用
+      itemsPerPage: 10,
     };
   },
   computed: {
@@ -816,7 +817,6 @@ let archiveNoteUpdateForm = Vue.component("archive-note-update-form", {
       this.searchForm.relateNotesTableData = [];
       this.isSearchedRelates = false;
       this.searchForm.selectedDB = [];
-
       this.updateByteCount(this.archiveNoteUpdateForm.text); // バイト数再計算
       this.resetValidationErrors();
       this.isDownloadButtonVisible = true;
