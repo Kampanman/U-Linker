@@ -33,7 +33,7 @@ let usersVideoArea = Vue.component("users-video-area", {
           class="elevation-1 dense-table"
           dense
           :items-per-page="10"
-          :footer-props="{ 'items-per-page-options': [10, 20, 50, -1] }"
+          :footer-props="{ 'items-per-page-options': [10, 20, 50, 100] }"
           :search="search"
         >
           <template v-slot:item.play="{ item }">
