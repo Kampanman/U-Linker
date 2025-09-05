@@ -377,6 +377,7 @@ let selectedNoteText = Vue.component("selected-note-text", {
           contents_id: this.selectedNote.contentsId,
           title: this.selectedNote.title,
           text: this.selectedNote.text,
+          relate_notes: this.selectedNote.relateNotesAndWords,
           owner_id: this.loginUser.ownerId,
           token: this.functions.generateRandomAlphanumericString(16),
         }

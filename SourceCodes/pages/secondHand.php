@@ -6,6 +6,7 @@
   define('NOTE_ID', isset($_SESSION['selected_note_id']) ? "'".$_SESSION['selected_note_id']."'" : "''");
   define('NOTE_TITLE', isset($_SESSION['selected_note_title']) ? "'".$_SESSION['selected_note_title']."'" : "''");
   define('NOTE_TEXT', isset($_SESSION['selected_note_text']) ? "'" . str_replace("\n", "\\n", $_SESSION['selected_note_text']) . "'" : "''");
+  define('NOTE_RELATES', isset($_SESSION['selected_note_relates']) ? json_encode($_SESSION['selected_note_relates']) : "''");
 ?>
 
 <!DOCTYPE html>
@@ -39,14 +40,30 @@
               <v-icon color="green" class="me-2">mdi-book-open</v-icon>
               <span class="mr-2">タイトル: {{ unescapedTitle }}</span>
             </div>
-            <div class="mb-3" data-parts-id="secondhand-02-02">
+            <div class="mb-3" data-parts-id="secondhand-02-03">
+              <div v-if="parsedRelateNotesAndWords.length > 0">
+                <p class="mb-3">
+                  <v-icon color="purple" class="me-2 mr-2">mdi-format-list-bulleted</v-icon>
+                  <span class="mr-2">関連ノート・共通ワード</span>
+                </p>
+                <ul class="ml-4">
+                  <li v-for="(item, index) in parsedRelateNotesAndWords" :key="index">
+                    <span class="bold" v-text="item.title"></span> （共通ワード: {{ item.common_word }}）
+                  </li>
+                </ul>
+              </div>
+              <div class="ml-4 mb-3" v-else align="center">
+                <span>関連ノートは設定されていません</span>
+              </div>
+            </div>
+            <div class="mb-3" data-parts-id="secondhand-02-03">
               <hr class="my-5" />
               <p v-for="line in processedTextList" :key="line.index" :id="'row_' + line.index">{{ line.text }}</p>
               <hr class="my-5" />
             </div>
           </div>
           <v-row justify="center" class="mb-3">
-            <v-btn class="white--text" color="#8d0000" data-parts-id="secondhand-02-03" @click="closeWindow" v-text="'閉じる'"></v-btn>
+            <v-btn class="white--text" color="#8d0000" data-parts-id="secondhand-02-04" @click="closeWindow" v-text="'閉じる'"></v-btn>
           </v-row>
         </v-card>
       </v-app>
@@ -69,6 +86,7 @@
           contentsId: <?php echo NOTE_ID ?>,
           title: <?php echo NOTE_TITLE ?>,
           text: <?php echo NOTE_TEXT ?>,
+          relateNotesAndWords: <?php echo NOTE_RELATES ?>,
         },
         urlParam: <?php echo URL_PARAM ?>,
       },
@@ -88,6 +106,23 @@
           });
 
           return resObjects;
+        },
+        parsedRelateNotesAndWords() {
+          if (!this.selectedNote || !this.selectedNote.relateNotesAndWords) return [];
+          if (typeof this.selectedNote.relateNotesAndWords === 'string') {
+            try {
+              const unescapedRelator = this.functions.unescapeText(this.selectedNote.relateNotesAndWords);
+              const parsed = JSON.parse(unescapedRelator);
+              if (Array.isArray(parsed)) return parsed.filter(item => item && item.title && item.common_word);
+              return [];
+            } catch (e) {
+              console.error("関連ノート・共通ワードのJSONパースに失敗しました:", e);
+              return [];
+            }
+          } else if (Array.isArray(this.selectedNote.relateNotesAndWords)) {
+            return this.selectedNote.relateNotesAndWords.filter(item => item && item.title && item.common_word);
+          }
+          return [];
         },
       },
       mounted() {

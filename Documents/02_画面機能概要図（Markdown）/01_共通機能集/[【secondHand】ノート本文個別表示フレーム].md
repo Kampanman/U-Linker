@@ -56,13 +56,20 @@
     - 関連変数
       - selectedNote.contentsId（int型）
       - selectedNote.title（String型）
-  - 【secondhand-02-02】ノート本文
+  - 【secondhand-02-02】関連ノート
+    - 特徴・機能
+      - 選択されたノートに紐づく関連ノートが一覧表示される
+      - エラーが発生している場合は非表示
+    - 関連変数
+      - selectedNote.contentsId（int型）
+      - selectedNote.relateNotesAndWords（Object型）
+  - 【secondhand-02-03】ノート本文
     - 特徴・機能
       - 選択されたノートの本文が表示される
       - エラーが発生している場合は非表示
     - 関連変数
       - selectedNote.text（String型）
-  - 【secondhand-02-03】閉じるボタン
+  - 【secondhand-02-04】閉じるボタン
     - 特徴・機能
       - 押下すると、この画面が閉じられる
     - 関連変数

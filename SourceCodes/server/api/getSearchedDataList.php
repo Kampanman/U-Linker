@@ -253,6 +253,7 @@ try {
     $_SESSION['selected_note_id'] = $_POST['contents_id'];
     $_SESSION['selected_note_title'] = $_POST['title'];
     $_SESSION['selected_note_text'] = $_POST['text'];
+    if (isset($_POST['relate_notes'])) $_SESSION['selected_note_relates'] = $_POST['relate_notes'];
     $res['view_url'] = DOMAIN.'/'.CONTENTS_NAME.'/pages/secondHand.php?page_token=' . $_POST['token'];
 
     http_response_code(200); // 検索処理完了 (結果の有無に関わらず)
