@@ -3,15 +3,17 @@
 let archivedVideoListTable = Vue.component("archived-video-list-table", {
   template: `
     <div v-if="isVisible" class="fader mt-4">
+
       <v-card data-parts-id="exises-12-01">
         <v-card-title>
           アーカイブビデオタイトル一覧 ({{ csvFileName }})
           <v-spacer></v-spacer>
           <v-text-field
+            single-line hide-details dense
             v-model="search"
             append-icon="mdi-magnify"
             label="タイトル検索"
-            single-line hide-details dense class="search-field"
+            class="search-field"
           ></v-text-field>
         </v-card-title>
         <v-divider></v-divider>
@@ -23,18 +25,25 @@ let archivedVideoListTable = Vue.component("archived-video-list-table", {
           :footer-props="{'items-per-page-options': [10, 20, 50, 100]}"
           :items-per-page.sync="itemsPerPage"
           class="elevation-1 dense-table"
+          :loading="isLoading"
+          loading-text="データをロードしています..."
           no-data-text="ログインユーザーが登録したビデオデータが存在しません。"
         >
           <template v-slot:item.title="{ item }">
-            <span :data-parts-id="'exises-12-01-01'"
+            <span
+              :data-parts-id="'exises-12-01-01'"
               :data-contents-id="item.contentsId"
               v-text="item.title"></span>
           </template>
           <template v-slot:item.created="{ item }">
-            <span :data-parts-id="'exises-12-01-02'" v-text="item.created"></span>
+            <span
+              :data-parts-id="'exises-12-01-02'"
+              v-text="item.created"></span>
           </template>
           <template v-slot:item.updated="{ item }">
-            <span :data-parts-id="'exises-12-01-03'" v-text="item.updated"></span>
+            <span
+              :data-parts-id="'exises-12-01-03'"
+              v-text="item.updated"></span>
           </template>
           <template v-slot:item.publicity="{ item }">
             <v-chip dark small
@@ -52,12 +61,14 @@ let archivedVideoListTable = Vue.component("archived-video-list-table", {
           </template>
         </v-data-table>
       </v-card>
+
     </div>
   `,
   props: {
     isVisible: Boolean,
     csvFileName: String,
     items: Array,
+    isLoading: Boolean,
     functions: Object,
   },
   data() {

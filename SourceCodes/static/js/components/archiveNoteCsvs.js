@@ -5,6 +5,7 @@ import archiveNoteUpdateForm from './archiveNoteUpdateForm.js';
 let archiveNoteCsvs = Vue.component("archive-note-csvs", {
   template: `
     <div data-parts-id="exises-08" class="pa-4">
+
       <v-card>
         <v-card-title>
           アーカイブノートCSVファイル一覧
@@ -36,6 +37,7 @@ let archiveNoteCsvs = Vue.component("archive-note-csvs", {
         :is-visible="flag.isSelectedarchiveNotesTableView && !!selectedCsvFileName"
         :csv-file-name="selectedCsvFileName"
         :items="noteArchiveItems"
+        :is-loading="isLoading"
         :functions="functions"
         @edit-item="editArchivedNote"
       ></archived-note-list-table>
@@ -50,6 +52,7 @@ let archiveNoteCsvs = Vue.component("archive-note-csvs", {
         :is-visible="flag.isArchiveNoteUpdateFormOpen"
         :path="path"
       ></archive-note-update-form>
+
     </div>
   `,
   props: {
@@ -75,6 +78,7 @@ let archiveNoteCsvs = Vue.component("archive-note-csvs", {
         getFiles: [],
       },
       noteArchiveItems: [],
+      isLoading: false,
     };
   },
   methods: {
@@ -117,6 +121,8 @@ let archiveNoteCsvs = Vue.component("archive-note-csvs", {
       }
     },
     async fetchArchivednoteCsvRows(fileName) {
+      this.isLoading = true;
+      this.noteArchiveItems = [];
       try {
         const data = {
           type: "note",
@@ -156,9 +162,13 @@ let archiveNoteCsvs = Vue.component("archive-note-csvs", {
             } else {
               console.error("Error:", error.message);
             }
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       } catch (error) {
-        console.error("アカウント情報の取得に失敗しました:", error);
+        console.error("アーカイブノートの取得に失敗しました:", error);
+        this.isLoading = false;
       }
     },
     selectCsvFile(fileRow) {

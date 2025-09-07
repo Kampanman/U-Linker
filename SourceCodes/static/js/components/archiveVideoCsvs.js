@@ -5,6 +5,7 @@ import archiveVideoUpdateForm from './archiveVideoUpdateForm.js';
 let archiveVideoCsvs = Vue.component("archive-video-csvs", {
   template: `
     <div data-parts-id="exises-11" class="pa-4">
+
       <v-card>
         <v-card-title>
           アーカイブビデオCSVファイル一覧
@@ -36,6 +37,7 @@ let archiveVideoCsvs = Vue.component("archive-video-csvs", {
         :is-visible="flag.isSelectedArchiveVideosTableView && !!selectedCsvFileName"
         :csv-file-name="selectedCsvFileName"
         :items="videoArchiveItems"
+        :is-loading="isLoading"
         :functions="functions"
         @edit-item="editArchivedVideo"
       ></archived-video-list-table>
@@ -48,6 +50,7 @@ let archiveVideoCsvs = Vue.component("archive-video-csvs", {
         :video-data="selectedVideoForEdit"
         :is-visible="flag.isArchiveVideoUpdateFormOpen"
       ></archive-video-update-form>
+
     </div>
   `,
   props: {
@@ -72,12 +75,12 @@ let archiveVideoCsvs = Vue.component("archive-video-csvs", {
         getFiles: [],
       },
       videoArchiveItems: [],
+      isLoading: false,
     };
   },
   methods: {
     async fetchArchivedVideoCsvTitles() {
       try {
-
         const data = {
           type: "getCsvList",
           ownerId: this.loginUser.ownerId,
@@ -114,6 +117,8 @@ let archiveVideoCsvs = Vue.component("archive-video-csvs", {
       }
     },
     async fetchArchivedVideoCsvRows(fileName) {
+      this.isLoading = true;
+      this.videoArchiveItems = [];
       try {
         const data = {
           type: "video",
@@ -155,9 +160,13 @@ let archiveVideoCsvs = Vue.component("archive-video-csvs", {
             } else {
               console.error("Error:", error.message);
             }
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       } catch (error) {
-        console.error("アカウント情報の取得に失敗しました:", error);
+        console.error("アーカイブビデオの取得に失敗しました:", error);
+        this.isLoading = false;
       }
     },
     selectCsvFile(fileRow) {

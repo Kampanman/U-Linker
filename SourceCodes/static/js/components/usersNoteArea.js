@@ -34,6 +34,9 @@ let usersNoteArea = Vue.component("users-note-area", {
           :items-per-page="10"
           :footer-props="{ 'items-per-page-options': [10, 20, 50, 100] }"
           :search="search"
+          :loading="isLoading"
+          loading-text="データをロードしています..."
+          no-data-text="登録されているノートはありません。"
         >
           <template v-slot:item.title="{ item }">
             <span :data-parts-id="'exises-04-02-01'" v-if="item.url==''">{{ item.title }}</span>
@@ -74,11 +77,6 @@ let usersNoteArea = Vue.component("users-note-area", {
               </v-btn>
             </div>
           </template>
-          <template v-slot:no-data>
-            <v-alert :value="true" icon="mdi-alert" id="empty-alert" class="ma-3 empty-message">
-              登録されているノートはありません。
-            </v-alert>
-          </template>
         </v-data-table>
       </v-card>
     </div>
@@ -93,6 +91,7 @@ let usersNoteArea = Vue.component("users-note-area", {
   data() {
     return {
       usersNotesList: [],
+      isLoading: false,
       search: '',
       headers: [
         { text: 'タイトル', value: 'title', align: 'start', filterable: true, sortable: true },
@@ -153,6 +152,7 @@ let usersNoteArea = Vue.component("users-note-area", {
       this.$emit('request-delete-confirmation', { noteData: noteToDelete });
     },
     async fetchUserNotesList() { // APIからデータを取得
+      this.isLoading = true;
       try {
         const data = {
           type: "getNotesList",
@@ -179,6 +179,8 @@ let usersNoteArea = Vue.component("users-note-area", {
       } catch (error) {
         console.error("ノートリストの取得中にエラーが発生しました:", error);
         this.$emit('fetch-error', 'ノートリストの取得中にエラーが発生しました。');
+      } finally {
+        this.isLoading = false;
       }
     },
     async fetchUserNote(contentsId) { // APIからデータを取得

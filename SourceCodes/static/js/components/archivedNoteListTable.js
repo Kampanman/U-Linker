@@ -3,6 +3,7 @@
 let archivedNoteListTable = Vue.component("archived-note-list-table", {
   template: `
     <div v-if="isVisible" class="fader mt-4">
+
       <v-card data-parts-id="exises-09-01">
         <v-card-title>
           アーカイブノートタイトル一覧 ({{ csvFileName }})
@@ -25,13 +26,20 @@ let archivedNoteListTable = Vue.component("archived-note-list-table", {
           :footer-props="{'items-per-page-options': [10, 20, 50, 100]}"
           :items-per-page.sync="itemsPerPage"
           class="elevation-1 dense-table"
+          :loading="isLoading"
+          loading-text="データをロードしています..."
           no-data-text="ログインユーザーが登録したノートデータが存在しません。"
         >
           <template v-slot:item.title="{ item }">
-            <span :data-parts-id="'exises-09-01-01'" :data-contents-id="item.contentsId" v-text="item.title"></span>
+            <span
+              :data-parts-id="'exises-09-01-01'"
+              :data-contents-id="item.contentsId"
+              v-text="item.title"></span>
           </template>
           <template v-slot:item.created="{ item }">
-            <span :data-parts-id="'exises-09-01-02'" v-text="item.created"></span>
+            <span
+              :data-parts-id="'exises-09-01-02'"
+              v-text="item.created"></span>
           </template>
           <template v-slot:item.updated="{ item }">
             <span :data-parts-id="'exises-09-01-03'" v-text="item.updated"></span>
@@ -44,7 +52,8 @@ let archivedNoteListTable = Vue.component("archived-note-list-table", {
           </template>
           <template v-slot:item.actions="{ item }">
             <v-btn small
-              color="#8d0000" class="white--text my-2"
+              color="#8d0000"
+              class="white--text my-2"
               :data-parts-id="'exises-09-01-05'"
               :data-contents-id="item.contentsId"
               @click="onEditItem(item)"
@@ -52,12 +61,14 @@ let archivedNoteListTable = Vue.component("archived-note-list-table", {
           </template>
         </v-data-table>
       </v-card>
+
     </div>
   `,
   props: {
     isVisible: Boolean,
     csvFileName: String,
     items: Array,
+    isLoading: Boolean,
     functions: Object,
   },
   data() {

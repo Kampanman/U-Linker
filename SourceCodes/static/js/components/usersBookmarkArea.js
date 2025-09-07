@@ -34,6 +34,9 @@ let usersBookmarkArea = Vue.component("users-bookmark-area", {
           :items-per-page="10"
           :footer-props="{ 'items-per-page-options': [10, 20, 50, 100] }"
           :search="search"
+          :loading="isLoading"
+          loading-text="データをロードしています..."
+          no-data-text="ログインユーザーが登録したサイトデータが存在しません。"
         >
           <template v-slot:item.title="{ item }">
             <span :data-parts-id="'exises-14-02-01'">
@@ -60,11 +63,6 @@ let usersBookmarkArea = Vue.component("users-bookmark-area", {
               </v-btn>
             </div>
           </template>
-          <template v-slot:no-data>
-            <v-alert :value="true" icon="mdi-alert" id="empty-alert" class="ma-3 empty-message">
-              登録されているサイトはありません。
-            </v-alert>
-          </template>
         </v-data-table>
       </v-card>
     </div>
@@ -80,6 +78,7 @@ let usersBookmarkArea = Vue.component("users-bookmark-area", {
     return {
       usersBookmarksList: [],
       selectedBookmark: null,
+      isLoading: false,
       search: '',
       // v-data-table用のヘッダー定義
       headers: [
@@ -89,9 +88,6 @@ let usersBookmarkArea = Vue.component("users-bookmark-area", {
       openIframe: false,
     };
   },
-  computed: {
-    // 
-  },
   methods: {
     /**
      * 新規作成ボタンクリック時の処理
@@ -100,6 +96,7 @@ let usersBookmarkArea = Vue.component("users-bookmark-area", {
       this.selectedBookmark = null;
       this.$emit('request-show-form', { mode: 'regist', bookmarkData: null });
     },
+
     /**
      * 編集ボタンクリック時の処理
      * @param {string} bookmarkId - 編集対象のお気に入りサイトID (contents_id)
@@ -110,6 +107,7 @@ let usersBookmarkArea = Vue.component("users-bookmark-area", {
       const bookmarkToEdit = this.usersBookmarksList.find(v => v.contents_id === bookmarkId);
       this.$emit('request-show-form', { mode: 'update', bookmarkData: bookmarkToEdit });
     },
+
     /**
      * 削除ボタンクリック時の処理
      * @param {string} bookmarkId - 削除対象のお気に入りサイトID (contents_id)
@@ -120,7 +118,12 @@ let usersBookmarkArea = Vue.component("users-bookmark-area", {
       const bookmarkToDelete = this.usersBookmarksList.find(v => v.contents_id === bookmarkId);
       this.$emit('request-delete-confirmation', { bookmarkData: bookmarkToDelete });
     },
-    async fetchUserBookmarks() { // APIからデータを取得
+
+    /**
+     * APIからデータを取得する
+     */
+    async fetchUserBookmarks() {
+      this.isLoading = true;
       try {
         const data = {
           type: "getBookmarksList", // APIに合わせたタイプを指定
@@ -143,6 +146,8 @@ let usersBookmarkArea = Vue.component("users-bookmark-area", {
       } catch (error) {
         console.error("お気に入りサイトリストの取得中にエラーが発生しました:", error);
         this.$emit('fetch-error', 'お気に入りサイトリストの取得中にエラーが発生しました。');
+      } finally {
+        this.isLoading = false;
       }
     },
   },

@@ -35,6 +35,9 @@ let usersVideoArea = Vue.component("users-video-area", {
           :items-per-page="10"
           :footer-props="{ 'items-per-page-options': [10, 20, 50, 100] }"
           :search="search"
+　        :loading="isLoading"
+          loading-text="データをロードしています..."
+          no-data-text="登録されているビデオはありません。"
         >
           <template v-slot:item.play="{ item }">
             <div data-parts-id="exises-06-02-01" class="text-center">
@@ -82,11 +85,6 @@ let usersVideoArea = Vue.component("users-video-area", {
               </v-btn>
             </div>
           </template>
-          <template v-slot:no-data>
-            <v-alert :value="true" icon="mdi-alert" id="empty-alert" class="ma-3 empty-message">
-              登録されているビデオはありません。
-            </v-alert>
-          </template>
         </v-data-table>
       </v-card>
       <video-iframe :selected-video="selectedVideo" :open-iframe="openIframe" :is-search-mode="false"></video-iframe>
@@ -105,6 +103,7 @@ let usersVideoArea = Vue.component("users-video-area", {
   data() {
     return {
       usersVideosList: [],
+      isLoading: false,
       selectedVideo: null,
       search: '',
       headers: [
@@ -182,6 +181,7 @@ let usersVideoArea = Vue.component("users-video-area", {
       this.$emit('request-delete-confirmation', { videoData: videoToDelete });
     },
     async fetchUserVideos() { // APIからデータを取得
+      this.isLoading = true;
       try {
         const data = {
           type: "getVideosList", // APIに合わせたタイプを指定
@@ -208,6 +208,8 @@ let usersVideoArea = Vue.component("users-video-area", {
       } catch (error) {
         console.error("ビデオリストの取得中にエラーが発生しました:", error);
         this.$emit('fetch-error', 'ビデオリストの取得中にエラーが発生しました。');
+      } finally {
+        this.isLoading = false;
       }
     },
   },
