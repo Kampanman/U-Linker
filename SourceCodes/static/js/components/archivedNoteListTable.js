@@ -31,10 +31,10 @@ let archivedNoteListTable = Vue.component("archived-note-list-table", {
           no-data-text="ログインユーザーが登録したノートデータが存在しません。"
         >
           <template v-slot:item.title="{ item }">
-            <span
-              :data-parts-id="'exises-09-01-01'"
-              :data-contents-id="item.contentsId"
-              v-text="item.title"></span>
+            <span :data-parts-id="'exises-09-01-01'" v-if="!item.url">{{ item.title }}</span>
+            <span :data-parts-id="'exises-09-01-01'" v-else>
+              <a target="_blank" :href="item.url" :data-contents-id="item.contentsId">{{ item.title }}</a>
+            </span>
           </template>
           <template v-slot:item.created="{ item }">
             <span
@@ -104,7 +104,7 @@ let archivedNoteListTable = Vue.component("archived-note-list-table", {
     onEditItem(item) {
       this.$emit('edit-item', item);
     }
-  }
+  },
 });
 
 export default archivedNoteListTable;

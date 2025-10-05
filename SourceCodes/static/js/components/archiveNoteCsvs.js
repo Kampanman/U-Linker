@@ -26,8 +26,7 @@ let archiveNoteCsvs = Vue.component("archive-note-csvs", {
               color="#8d0000" class="white--text my-2"
               @click="selectCsvFile(item)"
               data-parts-id="exises-08-02"
-              :data-filename="item.name"
-            >選択</v-btn>
+              :data-filename="item.name">選択</v-btn>
           </template>
         </v-data-table>
       </v-card>
@@ -144,6 +143,7 @@ let archiveNoteCsvs = Vue.component("archive-note-csvs", {
                   return {
                     contentsId: row.contents_id,
                     title: this.functions.unescapeText(row.title),
+                    url: (row.url == 'NULL' || row.url == null) ? '' : row.url,
                     publicity: Number(row.publicity),
                     created: row.created_at.split(' ')[0],
                     updated: row.updated_at.split(' ')[0],

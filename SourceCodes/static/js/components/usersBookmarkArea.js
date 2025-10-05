@@ -30,6 +30,8 @@ let usersBookmarkArea = Vue.component("users-bookmark-area", {
           item-key="contents_id"
           data-parts-id="exises-14-02"
           class="elevation-1 dense-table"
+          :sort-by="'created_at'"
+          :sort-desc="true"
           dense
           :items-per-page="10"
           :footer-props="{ 'items-per-page-options': [10, 20, 50, 100] }"
@@ -42,6 +44,9 @@ let usersBookmarkArea = Vue.component("users-bookmark-area", {
             <span :data-parts-id="'exises-14-02-01'">
               <a target="_blank" :href="item.url" :data-contents-id="item.contents_id">{{ item.title }}</a>
             </span>
+          </template>
+          <template v-slot:item.created_at="{ item }">
+            <span :data-parts-id="'exises-14-02-03'">{{ item.created_at }}</span>
           </template>
           <template v-slot:item.actions="{ item }">
             <div data-parts-id="exises-14-02-02" class="text-center">
@@ -83,6 +88,7 @@ let usersBookmarkArea = Vue.component("users-bookmark-area", {
       // v-data-table用のヘッダー定義
       headers: [
         { text: 'タイトル', value: 'title', align: 'start', filterable: true, sortable: true },
+        { text: '登録日', value: 'created_at', filterable: false, sortable: true, width: '120px' },
         { text: '編集／削除', value: 'actions', filterable: false, sortable: false, width: '100px', align: 'center' },
       ],
       openIframe: false,
@@ -137,6 +143,7 @@ let usersBookmarkArea = Vue.component("users-bookmark-area", {
             return { // 各siteオブジェクトのコピーを作成し、titleプロパティを上書きする
               ...site, // 元のsiteオブジェクトのプロパティを展開
               title: this.functions.unescapeText(site.title),
+              created_at: site.created_at.split(' ')[0],
             };
           });
         } else {
