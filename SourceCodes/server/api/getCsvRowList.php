@@ -33,7 +33,6 @@ try {
                     $dataRow = [
                       'contents_id' => $row[$header['contents_id']] ?? null,
                       'title' => $row[$header['title']] ?? null,
-                      'url' => isset($header['url']) ? ($row[$header['url']] ?? null) : null,
                       'publicity' => $row[$header['publicity']] ?? null,
                       'created_at' => $row[$header['created_at']] ?? null,
                       'updated_at' => $row[$header['updated_at']] ?? null,

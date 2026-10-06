@@ -46,4 +46,4 @@ let digiClock = Vue.component("digi-clock", {
   },
 });
 
-export default digiClock;
+export default digiClock; 

@@ -80,10 +80,10 @@ If you're not using the `SMTP` class explicitly (you're probably not), you don't
 ## Legacy versions
 PHPMailer 5.2 (which is compatible with PHP 5.0 — 7.0) is no longer supported, even for security updates. You will find the latest version of 5.2 in the [5.2-stable branch](https://github.com/PHPMailer/PHPMailer/tree/5.2-stable). If you're using PHP 5.5 or later (which you should be), switch to the 6.x releases.
 
- Upgrading from 5.2
+### Upgrading from 5.2
 The biggest changes are that source files are now in the `src/` folder, and PHPMailer now declares the namespace `PHPMailer\PHPMailer`. This has several important effects – [read the upgrade guide](https://github.com/PHPMailer/PHPMailer/tree/master/UPGRADING.md) for more details.
 
- Minimal installation
+### Minimal installation
 While installing the entire package manually or with Composer is simple, convenient, and reliable, you may want to include only vital files in your project. At the very least you will need [src/PHPMailer.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/PHPMailer.php). If you're using SMTP, you'll need [src/SMTP.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/SMTP.php), and if you're using POP-before SMTP (*very* unlikely!), you'll need [src/POP3.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/POP3.php). You can skip the [language](https://github.com/PHPMailer/PHPMailer/tree/master/language/) folder if you're not showing errors to users and can make do with English-only errors. If you're using XOAUTH2 you will need [src/OAuth.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/OAuth.php) as well as the Composer dependencies for the services you wish to authenticate with. Really, it's much easier to use Composer!
 
 ## A Simple Example
@@ -221,7 +221,7 @@ See [changelog](changelog.md).
 - Jim and Marcus decide to join forces and use GitHub as the canonical and official repo for PHPMailer in 2013.
 - PHPMailer moves to [the PHPMailer organisation](https://github.com/PHPMailer) on GitHub in 2013.
 
- What's changed since moving from SourceForge?
+### What's changed since moving from SourceForge?
 - Official successor to the SourceForge and Google Code projects.
 - Test suite.
 - Continuous integration with GitHub Actions.

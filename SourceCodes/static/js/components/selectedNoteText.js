@@ -127,7 +127,7 @@ let selectedNoteText = Vue.component("selected-note-text", {
             v-model="rebuildText"
             label="加工ノート本文"
             data-parts-id="common-04-02-05-04-03-01"
-            outlined auto-grow class="mb-3"
+            outlined class="mb-3"
           ></v-textarea>
           <v-row justify="center" class="mb-3">
             <v-btn color="#8d0000"

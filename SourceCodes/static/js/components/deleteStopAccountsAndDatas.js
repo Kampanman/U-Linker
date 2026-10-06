@@ -326,4 +326,4 @@ let deleteStopAccountsAndDatas = Vue.component("delete-stop-accounts-and-datas",
   },
 });
 
-export default deleteStopAccountsAndDatas;
+export default deleteStopAccountsAndDatas; 

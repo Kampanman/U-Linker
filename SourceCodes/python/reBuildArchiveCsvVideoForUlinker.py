@@ -117,9 +117,11 @@ def main():
       print(MSG_NO_HEADER + " (ファイルが空か、読み取れませんでした)") # ファイルが空、または読み取りに失敗した場合
       return
 
-    # ヘッダー行チェック: 1行目が「"contents_id"」で始まり「"created_user_id"」で終わる行
+    # ヘッダー行チェック: 1行目が「"contents_id"」（または「contents_id」）で始まり「"created_user_id"」（または「created_user_id」）で終わる行
     header_line = csv_lines_read[0]
-    if not (header_line.startswith('"contents_id"') and header_line.endswith('"created_user_id"')):
+    is_valid_start = header_line.startswith('"contents_id"') or header_line.startswith('contents_id')
+    is_valid_end = header_line.endswith('"created_user_id"') or header_line.endswith('created_user_id')
+    if not (is_valid_start and is_valid_end):
       print(MSG_NO_HEADER)
       return
 

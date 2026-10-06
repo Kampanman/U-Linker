@@ -43,6 +43,6 @@ This support is handled automatically: if you add an email address that requires
 
 The one place you will need to be careful is in the selection of the address validator. By default, PHPMailer uses PHP's built-in `filter_var` validator, which does not allow UTF-8 email addresses. When PHPMailer spots that you have submitted a UTF-8 address, but have not altered the default validator, it will automatically switch to using a UTF-8-compatible validator. As soon as you do this, any SMTP connection you make will *require* that the server you connect to supports `SMTPUTF8`. You can select this validator explicitly by setting `PHPMailer::$validator = 'eai'` (an acronym for Email Address Internationalization).
 
- Postfix gotcha
+### Postfix gotcha
 
 Postfix has supported `SMTPUTF8` for a long time, but it has a peculiarity that it does not always advertise that it does so. However, rather surprisingly, if you use UTF-8 in the conversation, it will work anyway.
