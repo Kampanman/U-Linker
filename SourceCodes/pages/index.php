@@ -15,6 +15,27 @@
 <html lang="ja">
 <head>
   <?php echo HEAD_LINKS; ?>
+  <style>
+    .header-right .header-icon-link {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      margin-right: 4px;
+    }
+    .header-right .header-icon-link .theme--light.v-icon,
+    .header-right .header-icon-link .theme--dark.v-icon {
+      border: 2px solid white;
+      border-radius: 5px;
+      color: white !important;
+      padding: 5px;
+      transition: all 0.2s ease;
+    }
+    .header-right .header-icon-link:hover .theme--light.v-icon,
+    .header-right .header-icon-link:hover .theme--dark.v-icon {
+      border: 2px solid yellow;
+      color: yellow !important;
+    }
+  </style>
 </head>
 <body style="background-color: #B2DFDB;">
   <div id="app">
@@ -58,6 +79,16 @@
           @click="openSearchForm"
           title="検索フォームを開きます"
         ><v-icon color="white" class="">mdi-magnify</v-icon></button>
+        <a
+          href="./keywordLinesSearch/index.php"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="header-icon-link"
+          title="ノート・CSVキーワード該当行一覧検索を別タブで開きます"
+          v-if="sessionString !== ''"
+        >
+          <v-icon dark>mdi-text-box-search-outline</v-icon>
+        </a>
         <button data-parts-id="common-01-exises-02"
           :disabled="!isReady"
           v-if="sessionString !== ''"

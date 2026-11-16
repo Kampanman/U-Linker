@@ -1,0 +1,485 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   ノート・アーカイブCSV横断 キーワード該当行抽出機能 専用スタイルシート (青テイスト)
+   ========================================================================== */
+
+/* ページ全体コンテナ */
+.kls-page-wrapper {
+  background-color: #E3F2FD !important;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: #263238;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Meiryo", sans-serif;
+}
+
+/* Vuetifyの全体背景ラッパーの上書き（既存style.cssのライトグリーン #B2DFDB を完全に打ち消す） */
+.kls-page-wrapper .v-application,
+.kls-page-wrapper .v-application--wrap {
+  background-color: #E3F2FD !important;
+  min-height: calc(100vh - 60px);
+}
+
+/* Vueコンポーネントのルート要素のブロック化・幅最大化 */
+keyword-lines-search-app {
+  display: block;
+  width: 100%;
+}
+
+/* ヘッダー（上端・左右マージンなし、幅100%） */
+.kls-header {
+  background-color: #1565C0;
+  color: #FFFFFF;
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.kls-header-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.kls-header-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.kls-header-link {
+  color: #E3F2FD !important;
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  background: transparent;
+  cursor: pointer;
+}
+
+.kls-header-link:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF !important;
+  border-color: #FFFFFF;
+}
+
+/* コンテンツコンテナ（最初からStep 3と同じ最大幅1100pxに統一） */
+.kls-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 24px auto 40px auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* 共通カード（幅100%に統一） */
+.kls-card {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #FFFFFF;
+  border: 1px solid #90CAF9;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 6px rgba(21, 101, 192, 0.08);
+}
+
+/* セクションタイトル */
+.kls-section-title {
+  color: #0D47A1;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-left: 5px solid #1976D2;
+  padding-left: 12px;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* フォーム要素 */
+.kls-form-group {
+  margin-bottom: 20px;
+}
+
+.kls-label {
+  display: block;
+  font-weight: 600;
+  color: #0D47A1;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.kls-input-text {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 1rem;
+  border: 1px solid #90CAF9;
+  border-radius: 6px;
+  box-sizing: border-box;
+  background-color: #FAFAFA;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.kls-input-text:focus {
+  outline: none;
+  border-color: #1976D2;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
+  background-color: #FFFFFF;
+}
+
+/* 検索対象ソース選択テーブル */
+.kls-source-table-wrapper {
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid #BBDEFB;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.kls-source-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.kls-source-table th {
+  background-color: #E3F2FD;
+  color: #0D47A1;
+  padding: 10px 12px;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 2px solid #90CAF9;
+  font-weight: 600;
+}
+
+.kls-source-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #E3F2FD;
+  vertical-align: middle;
+}
+
+.kls-source-table tr:last-child td {
+  border-bottom: none;
+}
+
+.kls-source-table tr:hover {
+  background-color: #F0F7FF;
+}
+
+.kls-source-table label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  margin: 0;
+  width: 100%;
+}
+
+/* 出典バッジ */
+.kls-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.kls-badge-db {
+  background-color: #BBDEFB;
+  color: #0D47A1;
+  border: 1px solid #90CAF9;
+}
+
+.kls-badge-csv {
+  background-color: #C8E6C9;
+  color: #1B5E20;
+  border: 1px solid #A5D6A7;
+}
+
+/* ボタン群 */
+.kls-btn-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ボタン群の中央寄せ用 */
+.kls-btn-group-center {
+  justify-content: center;
+}
+
+/* 単体ボタンの中央寄せ用コンテナ */
+.kls-btn-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.kls-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.kls-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* プライマリボタン（濃い青背景＋白文字） */
+.kls-btn-primary {
+  background-color: #0D47A1 !important;
+  color: #FFFFFF !important;
+}
+
+.kls-btn-primary,
+.kls-btn-primary *,
+.kls-btn-primary span,
+.kls-btn-primary .mdi {
+  color: #FFFFFF !important;
+}
+
+.kls-btn-primary:not(:disabled):hover {
+  background-color: #1565C0 !important;
+  box-shadow: 0 2px 6px rgba(13, 71, 161, 0.3);
+}
+
+/* サブボタン（中間青背景＋白文字） */
+.kls-btn-sub {
+  background-color: #1976D2 !important;
+  color: #FFFFFF !important;
+}
+
+.kls-btn-sub,
+.kls-btn-sub *,
+.kls-btn-sub span,
+.kls-btn-sub .mdi {
+  color: #FFFFFF !important;
+}
+
+.kls-btn-sub:not(:disabled):hover {
+  background-color: #1E88E5 !important;
+}
+
+.kls-btn-outline {
+  background-color: transparent !important;
+  color: #0D47A1 !important;
+  border: 1px solid #90CAF9 !important;
+}
+
+.kls-btn-outline,
+.kls-btn-outline *,
+.kls-btn-outline span,
+.kls-btn-outline .mdi {
+  color: #0D47A1 !important;
+}
+
+.kls-btn-outline:not(:disabled):hover {
+  background-color: #E3F2FD !important;
+}
+
+.kls-btn-sm {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+/* Step 2 ヒットレコード一覧 */
+.kls-hit-list {
+  max-height: 380px;
+  overflow-y: auto;
+  border: 1px solid #BBDEFB;
+  border-radius: 6px;
+  padding: 8px;
+  background-color: #FAFAFA;
+  margin-bottom: 16px;
+}
+
+.kls-hit-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.15s;
+  cursor: pointer;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.kls-hit-item:last-child {
+  border-bottom: none;
+}
+
+.kls-hit-item:hover {
+  background-color: #E3F2FD;
+}
+
+.kls-hit-item label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  cursor: pointer;
+  margin: 0;
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+/* 中間配置：並び替えプルダウンエリア (Step 2 と Step 3 の間) */
+.kls-sort-bar {
+  background-color: #E3F2FD;
+  border: 1px solid #64B5F6;
+  border-radius: 6px;
+  padding: 12px 18px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  box-shadow: 0 1px 3px rgba(21, 101, 192, 0.08);
+}
+
+.kls-sort-label {
+  font-weight: 700;
+  color: #0D47A1;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.kls-sort-select {
+  padding: 6px 12px;
+  font-size: 0.95rem;
+  border: 1px solid #90CAF9;
+  border-radius: 4px;
+  background-color: #FFFFFF;
+  color: #0D47A1;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.kls-sort-select:focus {
+  outline: none;
+  border-color: #1976D2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+/* Step 3 抽出結果表示エリア */
+.kls-result-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.kls-result-box {
+  background-color: #FFFFFF;
+  border: 1px solid #90CAF9;
+  border-radius: 6px;
+  padding: 20px;
+  font-family: Consolas, Monaco, "Courier New", "Meiryo", monospace;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #212121;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 600px;
+  overflow-y: auto;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* キーワードハイライト装飾 */
+mark.hl-keyword {
+  background-color: #FFF59D;
+  color: #0D47A1;
+  font-weight: bold;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* コピー完了フィードバック通知 */
+.kls-toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #0D47A1;
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: fadeInOut 3s forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(10px); }
+  10% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+/* エラー表示カード (未ログイン時等) */
+.kls-error-card {
+  max-width: 600px;
+  margin: 60px auto;
+  background-color: #FFFFFF;
+  border: 2px solid #EF9A9A;
+  border-radius: 8px;
+  padding: 32px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(211, 47, 47, 0.12);
+}
+
+.kls-error-icon {
+  font-size: 3rem;
+  color: #D32F2F;
+  margin-bottom: 16px;
+}
+
+.kls-error-title {
+  color: #C62828;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.kls-error-text {
+  color: #424242;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
